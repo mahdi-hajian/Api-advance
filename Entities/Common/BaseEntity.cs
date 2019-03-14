@@ -6,7 +6,6 @@ namespace Entities
 {
     public interface IEntity
     {
-
     }
 
     public abstract class BaseEntity<TKey> : IEntity
@@ -14,9 +13,8 @@ namespace Entities
         public TKey Id { get; set; }
     }
 
-    public class BaseEntity: BaseEntity<int>
+    public abstract class BaseEntity : BaseEntity<int>
     {
-
     }
 
 }

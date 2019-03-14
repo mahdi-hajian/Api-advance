@@ -9,16 +9,12 @@ namespace Entities
     public class Category: BaseEntity
     {
         [Required]
-        [MaxLength(50)]
+        [StringLength(50)]
         public string Name { get; set; }
-
-        public int? ParentCateforyId { get; set; }
-
-        [ForeignKey(nameof(ParentCateforyId))]
+        public int? ParentCategoryId { get; set; }
+        [ForeignKey(nameof(ParentCategoryId))]
         public Category ParentCategory { get; set; }
-
-        public ICollection<Category> ChildCategory { get; set; }
-
+        public ICollection<Category> ChildCategories { get; set; }
         public ICollection<Post> Posts { get; set; }
     }
 }

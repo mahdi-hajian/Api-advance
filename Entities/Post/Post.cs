@@ -22,8 +22,11 @@ namespace Entities
         {
             builder.Property(c => c.Title).IsRequired().HasMaxLength(200);
             builder.Property(c => c.Description).IsRequired();
-            builder.HasOne(c => c.Category).WithMany(c => c.Posts).HasForeignKey(c => c.CategoryId);
-            builder.HasOne(c => c.Author).WithMany(c => c.Posts).HasForeignKey(c => c.AuthorId);
+            // وقتی حذف شد فرزندان حذف میشوند
+            builder.HasOne(c => c.Category).WithMany(c => c.Posts).HasForeignKey(c => c.CategoryId).OnDelete(DeleteBehavior.Cascade);
+
+            // وقتی حذف شد فرزندان حذف نمیشوند و پدر موقع حذف ارور میدهد
+            builder.HasOne(c => c.Author).WithMany(c => c.Posts).HasForeignKey(c => c.AuthorId).OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
