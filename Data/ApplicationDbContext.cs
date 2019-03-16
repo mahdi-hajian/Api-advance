@@ -38,7 +38,7 @@ namespace Data
 
             // این متد میاد اون هایی که آن دیلیت روی کسکید هستند رو رستریک میکند 
             // اگر پدری دارای پدری دارای چند فرزند بود اگر پدر را پاک کنیم ارور میدهد و پدر تا بودن فرزندان حذف نمیشوند
-            modelBuilder.AddRestrictDeleteBehaviorConvention();
+            //modelBuilder.AddRestrictDeleteBehaviorConvention();
 
             // هر فیلدی که اسمش آیدی بود رو از نوع جیوآیدی بود رو ریفالت ولیواش رو تغغیر میدهد به NEWSEQUENTIALID() 
             modelBuilder.AddSequentialGuidForIdConvention();
@@ -85,8 +85,8 @@ namespace Data
 
                 foreach (var property in properties)
                 {
-                    var propName = property.Name;
-                    var val = (string)property.GetValue(item.Entity, null);
+                    string propName = property.Name;
+                    string val = (string)property.GetValue(item.Entity, null);
 
                     if (val.HasValue())
                     {
