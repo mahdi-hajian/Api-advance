@@ -31,12 +31,18 @@ namespace WebFramework.Filter
             else if (context.Result is BadRequestObjectResult badRequestObjectResult)
             {
                 var message = badRequestObjectResult.Value.ToString();
+                var TempErrors = "";
                 if (badRequestObjectResult.Value is SerializableError errors)
                 {
                     var errorMessages = errors.SelectMany(p => (string[])p.Value).Distinct();
-                    message = string.Join(" | ", errorMessages);
+                    //message = string.Join(" | ", errorMessages);
+                    message = "لطفا ورودی ها را چک کنید";
+                    TempErrors = string.Join("|", errorMessages);
                 }
+                
                 var apiResult = new ApiResult(false, ApiResultStatusCode.BadRequest, message);
+                if (TempErrors != "")
+                    apiResult.Errors = TempErrors.Split('|').ToList();
                 context.Result = new JsonResult(apiResult) { StatusCode = badRequestObjectResult.StatusCode };
             }
             else if (context.Result is ContentResult contentResult)

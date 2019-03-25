@@ -1,5 +1,6 @@
 ﻿using Common.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,9 @@ namespace WebFramework.Api
     {
         public ApiResult()
         {
-            Errors = new List<string>();
         }
 
-        public ApiResult(bool isSuccess, ApiResultStatusCode statusCode, string message = null):base()
+        public ApiResult(bool isSuccess, ApiResultStatusCode statusCode, string message = null) : this()
         {
             IsSuccess = isSuccess;
             StatusCode = statusCode;
@@ -24,6 +24,7 @@ namespace WebFramework.Api
         public bool IsSuccess { get; set; }
         public ApiResultStatusCode StatusCode { get; set; }
         public string Message { get; set; }
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public List<string> Errors { get; set; }
 
         #region Implicit Operators
@@ -40,12 +41,17 @@ namespace WebFramework.Api
         public static implicit operator ApiResult(BadRequestObjectResult result)
         {
             var message = result.Value.ToString();
+            var TempErrors = "";
             if (result.Value is SerializableError errors)
             {
                 var errorMessages = errors.SelectMany(p => (string[])p.Value).Distinct();
-                message = string.Join(" | ", errorMessages);
+                message = "لطفا ورودی ها را چک کنید";
+                TempErrors = string.Join("|", errorMessages);
             }
-            return new ApiResult(false, ApiResultStatusCode.BadRequest, message);
+            var apiResult = new ApiResult(false, ApiResultStatusCode.BadRequest, message);
+            if (TempErrors != "")
+                apiResult.Errors = TempErrors.Split('|').ToList();
+            return apiResult;
         }
 
         public static implicit operator ApiResult(ContentResult result)
@@ -71,6 +77,7 @@ namespace WebFramework.Api
             Data = data;
         }
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public TData Data { get; set; }
 
         #region Implicit Operators
@@ -97,12 +104,17 @@ namespace WebFramework.Api
         public static implicit operator ApiResult<TData>(BadRequestObjectResult result)
         {
             var message = result.Value.ToString();
+            var TempErrors = "";
             if (result.Value is SerializableError errors)
             {
                 var errorMessages = errors.SelectMany(p => (string[])p.Value).Distinct();
-                message = string.Join(" | ", errorMessages);
+                message = "لطفا ورودی ها را چک کنید";
+                TempErrors = string.Join("|", errorMessages);
             }
-            return new ApiResult<TData>(false, ApiResultStatusCode.BadRequest, null, message);
+            var apiResult = new ApiResult<TData>(false, ApiResultStatusCode.BadRequest, null, message);
+            if (TempErrors != "")
+                apiResult.Errors = TempErrors.Split('|').ToList();
+            return apiResult;
         }
 
         public static implicit operator ApiResult<TData>(ContentResult result)

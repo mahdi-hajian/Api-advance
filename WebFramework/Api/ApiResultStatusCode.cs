@@ -5,18 +5,18 @@ namespace WebFramework.Api
     public enum ApiResultStatusCode
     {
         [Display(Name = "عملیات با موفقیت انجام شد")]
-        Success = 0,
+        Success = 1,
         [Display(Name = "خطایی در سرور رخ داده است")]
-        serverError = 1,
+        serverError,
         [Display(Name = "پارامتر های ارسالی معتبر نیستند")]
-        BadRequest = 2,
+        BadRequest,
         [Display(Name = "یافت نشد")]
-        NotFound = 3,
+        NotFound,
         [Display(Name = "لیست خالی است")]
-        ListEmpty = 4,
+        ListEmpty,
         [Display(Name = "خطایی در پردازش رخ داد")]
-        LogicError = 5,
+        LogicError,
         [Display(Name = "خطای احراز هویت")]
-        UnAuthorized = 6
+        UnAuthorized
     }
 }

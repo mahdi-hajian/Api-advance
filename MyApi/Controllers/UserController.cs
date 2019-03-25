@@ -10,12 +10,14 @@ using Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MyApi.Models;
 using WebFramework.Api;
 using WebFramework.Filter;
 
 namespace MyApi.Controllers
 {
     [Route("api/[controller]")]
+    [ApiResultFilter]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -39,7 +41,6 @@ namespace MyApi.Controllers
         {
             // به این صورت هم میشود دریافت کرد
             //var cancellationToken = HttpContext.RequestAborted;
-
             var user = await userRepository.GetByIdAsync(cancellationToken, id);
             if (user == null)
                 return NotFound();
@@ -47,29 +48,37 @@ namespace MyApi.Controllers
         }
 
         [HttpPost]
-        [ApiResultFilter]
-        public async Task<ApiResult<User>> Create(User user)
+        public async Task<ApiResult<User>> Create(UserDto userDto, CancellationToken cancellationToken)
         {
-            await userRepository.AddAsync(user, CancellationToken.None);
+            var exist = await userRepository.TableNoTracking.AnyAsync(c=>c.UserName == userDto.UserName);
+            if (exist)
+                return BadRequest("این نام کاربری قبلا انتخاب شده است");
+            var user = new User
+            {
+                UserName = userDto.UserName,
+                FullName = userDto.FullName,
+                Age = userDto.Age,
+                Gender = userDto.Gender
+            };
+            await userRepository.AddAsync(user, userDto.Password, cancellationToken);
             return Ok(user);
         }
 
         [HttpPut]
-        public async Task<ApiResult> Update(int id, User user, CancellationToken cancellationToken)
+        public async Task<ApiResult<User>> Update(int id, User user, CancellationToken cancellationToken)
         {
-            await userRepository.UpdateAsync(user, cancellationToken);
-            //var updateUser = await userRepository.GetByIdAsync(cancellationToken, id);
+            var updateUser = await userRepository.GetByIdAsync(cancellationToken, id);
 
-            //updateUser.UserName = user.UserName;
-            //updateUser.PasswordHash = user.PasswordHash;
-            //updateUser.FullName = user.FullName;
-            //updateUser.Age = user.Age;
-            //updateUser.Gender = user.Gender;
-            //updateUser.IsActive = user.IsActive;
-            //updateUser.LastLoginDate = user.LastLoginDate;
-            //await userRepository.UpdateAsync(updateUser, cancellationToken);
+            updateUser.UserName = user.UserName;
+            updateUser.PasswordHash = user.PasswordHash;
+            updateUser.FullName = user.FullName;
+            updateUser.Age = user.Age;
+            updateUser.Gender = user.Gender;
+            updateUser.IsActive = user.IsActive;
+            updateUser.LastLoginDate = user.LastLoginDate;
+            await userRepository.UpdateAsync(updateUser, cancellationToken);
 
-            return Ok();
+            return Ok(user);
         }
 
         [HttpDelete]
