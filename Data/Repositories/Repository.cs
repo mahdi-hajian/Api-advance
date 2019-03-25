@@ -1,4 +1,5 @@
 ﻿using Common.Utilities;
+using Data.Contracts;
 using Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -52,7 +53,7 @@ namespace Data.Repositories
             Assert.NotNull(entity, nameof(entity));
             Entities.Update(entity);
             if (saveNow)
-                await DbContext.SaveChangesAsync(cancellationToken);
+               await DbContext.SaveChangesAsync(cancellationToken);
         }
 
         public virtual async Task UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken, bool saveNow = true)
@@ -77,6 +78,11 @@ namespace Data.Repositories
             Entities.RemoveRange(entities);
             if (saveNow)
                 await DbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public virtual async Task SaveAsync()
+        {
+            await DbContext.SaveChangesAsync();
         }
         #endregion
 
@@ -131,6 +137,11 @@ namespace Data.Repositories
             Entities.RemoveRange(entities);
             if (saveNow)
                 DbContext.SaveChanges();
+        }
+
+        public virtual void Save()
+        {
+            DbContext.SaveChanges();
         }
         #endregion
 

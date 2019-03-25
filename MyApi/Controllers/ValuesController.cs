@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Data.Contracts;
 using Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,11 +12,9 @@ namespace MyApi.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        private readonly UserRepository userRepository;
 
-        public ValuesController(UserRepository userRepository)
+        public ValuesController()
         {
-            this.userRepository = userRepository;
         }
         // GET api/values
         [HttpGet]
