@@ -109,13 +109,18 @@ namespace WebFramework.Middleware
             {
                 if (context.Response.HasStarted)
                     throw new InvalidOperationException("The response has already started, the http status code middleware will not be executed.");
-                var error = new List<string>();
-                var messageFilter = message.Replace("\\r\\n   ", " || ").Replace("\\\\", "\\").Replace("\"", "").Replace("   ", " ").Split('{')[1].Split('}')[0];
-                foreach (var item in messageFilter.Substring(messageFilter.IndexOf(',')+1).Split(" || "))
+                
+                ApiResult result = new ApiResult(false, apiStatusCode, message);
+                if (_env.IsDevelopment())
                 {
-                    error.Add(item);
+                    var error = new List<string>();
+                    var messageFilter = message.Replace("\\r\\n   ", " || ").Replace("\\\\", "\\").Replace("\"", "").Replace("   ", " ").Split('{')[1].Split('}')[0];
+                    foreach (var item in messageFilter.Substring(messageFilter.IndexOf(',') + 1).Split(" || "))
+                    {
+                        error.Add(item);
+                    }
+                    result = new ApiResult(false, apiStatusCode, messageFilter.Split(',')[0].Split(':')[1]) { Errors = error };
                 }
-                var result = new ApiResult(false, apiStatusCode, messageFilter.Split(',')[0].Split(':')[1]) { Errors = error };
                 var json = JsonConvert.SerializeObject(result);
 
                 context.Response.StatusCode = (int)httpStatusCode;

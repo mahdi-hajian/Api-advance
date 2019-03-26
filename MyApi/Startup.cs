@@ -34,7 +34,7 @@ namespace MyApi
             {
                 Options.UseSqlServer((Configuration.GetConnectionString("DefaultConnection")));
             });
-
+            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUserRepository, UserRepository>();
