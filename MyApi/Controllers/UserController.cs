@@ -7,10 +7,12 @@ using Common.Exceptions;
 using Data;
 using Data.Contracts;
 using Data.Repositories;
+using ElmahCore;
 using Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using MyApi.Models;
 using WebFramework.Api;
 using WebFramework.Filter;
@@ -23,10 +25,13 @@ namespace MyApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserRepository userRepository;
+        private readonly ILogger<UserController> logger;
 
-        public UserController(IUserRepository userRepository)
+        public UserController(IUserRepository userRepository, ILogger<UserController> logger)
         {
             this.userRepository = userRepository;
+            this.logger = logger;
+            this.logger = logger;
         }
 
         [HttpGet]
@@ -59,6 +64,7 @@ namespace MyApi.Controllers
                 Gender = userDto.Gender
             };
             await userRepository.AddAsync(user, userDto.Password, cancellationToken);
+            logger.LogError("کاربر ساخته شد");
             return Ok(user);
         }
 

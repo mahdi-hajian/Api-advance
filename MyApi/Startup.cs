@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Data;
 using Data.Contracts;
 using Data.Repositories;
+using ElmahCore;
+using ElmahCore.Mvc;
+using ElmahCore.Sql;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -34,8 +37,10 @@ namespace MyApi
             {
                 Options.UseSqlServer((Configuration.GetConnectionString("DefaultConnection")));
             });
-            
+
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUserRepository, UserRepository>();
         }
@@ -50,12 +55,20 @@ namespace MyApi
             }
             else
             {
+                // دوباره اکسپشن صادر میکند که بصورت جیسون هم دریافت شود
                 //app.UseExceptionHandler();
                 app.UseHsts();
             }
+
 
             app.UseHttpsRedirection();
             app.UseMvc();
         }
     }
 }
+
+//services.AddElmah<SqlErrorLog>(op =>
+//{
+//    op.ConnectionString = Configuration.GetConnectionString("ElmahError");
+//});
+//app.UseElmah();
