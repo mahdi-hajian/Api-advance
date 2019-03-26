@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using WebFramework.Middleware;
 
 namespace MyApi
 {
@@ -33,6 +34,7 @@ namespace MyApi
             {
                 Options.UseSqlServer((Configuration.GetConnectionString("DefaultConnection")));
             });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUserRepository, UserRepository>();
@@ -41,12 +43,14 @@ namespace MyApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseCustomExceptionHandler();
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();
             }
             else
             {
+                //app.UseExceptionHandler();
                 app.UseHsts();
             }
 

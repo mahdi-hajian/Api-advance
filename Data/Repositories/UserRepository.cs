@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Common.Exceptions;
 
 namespace Data.Repositories
 {
@@ -20,11 +21,16 @@ namespace Data.Repositories
             return Table.Where(c => c.UserName == userName && c.PasswordHash == passwordHash).SingleOrDefaultAsync(cancellationToken);
         }
 
-        public Task AddAsync(User user, string password, CancellationToken cancellationToken)
+        public async Task AddAsync(User user, string password, CancellationToken cancellationToken)
         {
+
+            var exist = await TableNoTracking.AnyAsync(c => c.UserName == user.UserName);
+            if (exist)
+                throw new BadRequestException("نام کاربری تکراری است");
+
             var passwordHash = SecurityHelper.GetSha256Hash(password);
             user.PasswordHash = passwordHash;
-            return base.AddAsync(user, cancellationToken);
+            await base.AddAsync(user, cancellationToken);
         }
     }
 }

@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WebFramework.Api
+namespace Common.Api
 {
     public enum ApiResultStatusCode
     {
         [Display(Name = "عملیات با موفقیت انجام شد")]
         Success = 1,
         [Display(Name = "خطایی در سرور رخ داده است")]
-        serverError,
+        ServerError,
         [Display(Name = "پارامتر های ارسالی معتبر نیستند")]
         BadRequest,
         [Display(Name = "یافت نشد")]

@@ -50,9 +50,6 @@ namespace MyApi.Controllers
         [HttpPost]
         public async Task<ApiResult<User>> Create(UserDto userDto, CancellationToken cancellationToken)
         {
-            var exist = await userRepository.TableNoTracking.AnyAsync(c=>c.UserName == userDto.UserName);
-            if (exist)
-                return BadRequest("این نام کاربری قبلا انتخاب شده است");
             var user = new User
             {
                 UserName = userDto.UserName,
