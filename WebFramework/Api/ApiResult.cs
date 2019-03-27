@@ -39,6 +39,11 @@ namespace WebFramework.Api
             return new ApiResult(false, ApiResultStatusCode.BadRequest);
         }
 
+        public static implicit operator ApiResult(UnauthorizedResult result)
+        {
+            return new ApiResult(false, ApiResultStatusCode.BadRequest, "غیرمجاز");
+        }
+
         public static implicit operator ApiResult(BadRequestObjectResult result)
         {
             var message = result.Value.ToString();
@@ -100,6 +105,11 @@ namespace WebFramework.Api
         public static implicit operator ApiResult<TData>(BadRequestResult result)
         {
             return new ApiResult<TData>(false, ApiResultStatusCode.BadRequest, null);
+        }
+
+        public static implicit operator ApiResult<TData>(UnauthorizedResult result)
+        {
+            return new ApiResult<TData>(false, ApiResultStatusCode.BadRequest, null, "غیرمجاز");
         }
 
         public static implicit operator ApiResult<TData>(BadRequestObjectResult result)

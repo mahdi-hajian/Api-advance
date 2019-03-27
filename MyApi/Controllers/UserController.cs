@@ -1,19 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using Common;
 using Common.Exceptions;
 using Data;
 using Data.Contracts;
 using Data.Repositories;
 using ElmahCore;
 using Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.JsonWebTokens;
 using MyApi.Models;
+using Services.Autorizes;
+using Services.Interfaces;
+using Services.Models;
 using WebFramework.Api;
 using WebFramework.Filter;
 
@@ -26,16 +34,27 @@ namespace MyApi.Controllers
     {
         private readonly IUserRepository userRepository;
         private readonly ILogger<UserController> logger;
+        private readonly IJWTService _jWTService;
 
-        public UserController(IUserRepository userRepository, ILogger<UserController> logger)
+        public UserController(IUserRepository userRepository, ILogger<UserController> logger, IJWTService JWTService)
         {
             this.userRepository = userRepository;
             this.logger = logger;
-            this.logger = logger;
+            _jWTService = JWTService;
+        }
+
+        [HttpGet("[action]")]
+        public async Task<ApiResult<string>> Token(LoginModel model, CancellationToken cancellationToken)
+        {
+            var user = await userRepository.GetByUserAndPass(model.UserName, model.password, cancellationToken);
+            if (user == null)
+                return Unauthorized();
+            var jwt = _jWTService.Generate(user, new List<string> { "Admin", "Manager" });
+            return jwt;
         }
 
         [HttpGet]
-        [ApiResultFilter]
+        [Authorize]
         public async Task<List<User>> Get()
         {
             var users = await userRepository.TableNoTracking.ToListAsync();
@@ -43,15 +62,17 @@ namespace MyApi.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ApiResult<User>> Get(int id, CancellationToken cancellationToken)
+        [Authorize]
+        public async Task<ApiResult<User>> Get(int id, [FromHeader] string Authorization, CancellationToken cancellationToken)
         {
-            // به این صورت هم میشود دریافت کرد
-            //var cancellationToken = HttpContext.RequestAborted;
+            //به این صورت هم میشود دریافت کرد
+           //var cancellationToken = HttpContext.RequestAborted;
             var user = await userRepository.GetByIdAsync(cancellationToken, id);
             if (user == null)
                 return NotFound();
             return user;
         }
+
 
         [HttpPost]
         public async Task<ApiResult<User>> Create(UserDto userDto, CancellationToken cancellationToken)

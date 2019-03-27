@@ -142,8 +142,8 @@ namespace Common.Utilities
             {
                 ValidateIssuer = true,
                 ValidateAudience = true,
-                ValidAudience = "tabandesign.ir",
-                ValidIssuer = "tabandesign.ir",
+                ValidAudience = "MyApi",
+                ValidIssuer = "MyApi",
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero,
                 RequireExpirationTime = false,
