@@ -1,6 +1,7 @@
 ﻿using Common;
 using Common.Utilities;
 using Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Services.Interfaces;
@@ -24,9 +25,11 @@ namespace Services.Autorizes
 
         public string Generate(User user, List<string> userRoles)
         {
-            // 16 character or more
-            var securityKey = Encoding.UTF8.GetBytes("kjashdf3;uewfhiefuef8dsfjdsfka'sdfadkfhadfakjhdfa;;'d;faasds");
+            var securityKey = Encoding.UTF8.GetBytes(_siteSetting.JwtSettings.SecretKey); // longer that 16 character
             var signinCredentials = new SigningCredentials(new SymmetricSecurityKey(securityKey), SecurityAlgorithms.HmacSha256Signature);
+
+            var encryptionkey = Encoding.UTF8.GetBytes(_siteSetting.JwtSettings.Encryptkey); //must be 16 character
+            var encryptingCredentials = new EncryptingCredentials(new SymmetricSecurityKey(encryptionkey), SecurityAlgorithms.Aes128KW, SecurityAlgorithms.Aes128CbcHmacSha256);
 
             var Descriptor = new SecurityTokenDescriptor() {
                 // سازنده
@@ -39,8 +42,11 @@ namespace Services.Autorizes
                 NotBefore = DateTime.Now.AddMinutes(_siteSetting.JwtSettings.NotBeforeMinutes),
                 // تاریخ انقضای توکن
                 Expires = DateTime.Now.AddHours(_siteSetting.JwtSettings.ExpirationMinutes),
-                // سیگنیچر متقارن
+                // سیگنیچر
                 SigningCredentials = signinCredentials,
+                // رمزنگاری توکن
+                EncryptingCredentials = encryptingCredentials,
+                // متغیر های درون توکن
                 Subject = new  ClaimsIdentity(_getClaims(user, userRoles)),
             };
 
@@ -57,12 +63,17 @@ namespace Services.Autorizes
 
         private IEnumerable<Claim> _getClaims(User user, List<string> userRoles)
         {
+            // هرچیزی میتواند باشد ولی اصولش این است
+            var securityStampClaimType = new ClaimsIdentityOptions().SecurityStampClaimType;
+
             var list = new List<Claim> {
                 // .net claim
                 new Claim(ClaimTypes.Name , user.UserName),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 // .jwt claim
                 new Claim(JwtRegisteredClaimNames.Gender, user.Gender.ToDisplay()),
+
+                new Claim(securityStampClaimType, user.SecurityStamp.ToString())
             };
             foreach (var item in userRoles)
             {

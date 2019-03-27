@@ -36,6 +36,7 @@ namespace MyApi.Controllers
         private readonly ILogger<UserController> logger;
         private readonly IJWTService _jWTService;
 
+
         public UserController(IUserRepository userRepository, ILogger<UserController> logger, IJWTService JWTService)
         {
             this.userRepository = userRepository;
@@ -66,7 +67,8 @@ namespace MyApi.Controllers
         public async Task<ApiResult<User>> Get(int id, [FromHeader] string Authorization, CancellationToken cancellationToken)
         {
             //به این صورت هم میشود دریافت کرد
-           //var cancellationToken = HttpContext.RequestAborted;
+            //var cancellationToken = HttpContext.RequestAborted;
+
             var user = await userRepository.GetByIdAsync(cancellationToken, id);
             if (user == null)
                 return NotFound();

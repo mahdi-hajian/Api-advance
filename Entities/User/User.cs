@@ -10,6 +10,7 @@ namespace Entities
         public User()
         {
             IsActive = true;
+            SecurityStamp = Guid.NewGuid();
         }
 
         [Key]
@@ -34,9 +35,11 @@ namespace Entities
 
         public bool IsActive { get; set; }
 
-        public DateTimeOffset LastLoginDate { get; set; }
+        public DateTimeOffset? LastLoginDate { get; set; }
 
         public ICollection<Post> Posts { get; set; }
+
+        public Guid SecurityStamp { get; set; }
     }
 
     public enum GenderType

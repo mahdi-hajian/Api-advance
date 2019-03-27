@@ -21,7 +21,7 @@ namespace Data.Contracts
         Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken, bool saveNow = true);
         void Attach(TEntity entity);
         void Save();
-        Task SaveAsync();
+        Task SaveAsync(CancellationToken cancellationToken);
         void Delete(TEntity entity, bool saveNow = true);
         Task DeleteAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true);
         void DeleteRange(IEnumerable<TEntity> entities, bool saveNow = true);

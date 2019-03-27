@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Common.Exceptions;
+using System;
+using System.Collections.Generic;
 
 namespace Data.Repositories
 {
@@ -32,5 +34,18 @@ namespace Data.Repositories
             user.PasswordHash = passwordHash;
             await base.AddAsync(user, cancellationToken);
         }
+
+        public Task UpdateSecuirtyStampAsync(User user, CancellationToken cancellationToken)
+        {
+            user.SecurityStamp = Guid.NewGuid();
+            return UpdateAsync(user, cancellationToken);
+        }
+
+        public Task UpdateLastLoginDateAsync(User user, CancellationToken cancellationToken)
+        {
+            user.LastLoginDate = DateTimeOffset.Now;
+            return UpdateAsync(user, cancellationToken);
+        }
+
     }
 }
