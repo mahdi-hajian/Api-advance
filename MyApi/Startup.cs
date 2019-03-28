@@ -1,10 +1,13 @@
-﻿using Common;
+﻿using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Common;
 using Data;
 using Data.Contracts;
 using Data.Repositories;
 using ElmahCore.Mvc;
 using ElmahCore.Sql;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -14,6 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Services.Autorizes;
 using Services.Interfaces;
 using Services.UserService;
+using System;
 using WebFramework.Configuration;
 using WebFramework.Middleware;
 
@@ -32,56 +36,42 @@ namespace MyApi
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            //services.AddCorsExtention();
+
             // با این متد میشود این تنظیمات را داخل کانسترکتور ها دریافت کرد
             // مثال در کانسترکتور JWTSwrvice.cs
             services.Configure<SiteSettings>(Configuration.GetSection(nameof(SiteSettings)));
 
-            services.AddDbContext<ApplicationDbContext>(Options =>
-            {
-                Options.UseSqlServer((Configuration.GetConnectionString("DefaultConnection")));
-            });
+            services.AddSbContext(Configuration);
 
-
-            services.AddElmah<SqlErrorLog>(options =>
-            {
-                options.Path = _siteSetting.ElmahPath;
-                options.ConnectionString = Configuration.GetConnectionString("ElmahError");
-            });
-
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IJWTService, JWTService>();
-            services.AddScoped<IUserService, UserService>();
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddElmah(Configuration, _siteSetting);
 
             // ترتیب بین این دو مورد پایین مهم است
             services.AddCustomIdentity(_siteSetting.IdentitySettings);
             services.AddJwtAuthentication(_siteSetting.JwtSettings);
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            // برای استفاده از اتوفک
+            // ابتدا خروجی این متد را از ووید به آی سرویس پروایدر تغییر میدهید و عملیات های زیر را انجام میدهیم
+            return services.BuilderServiceProvider();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseCustomExceptionHandler();
-            if (env.IsDevelopment())
-            {
-                //app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                // دوباره اکسپشن صادر میکند که بصورت جیسون هم دریافت شود
-                //app.UseExceptionHandler();
-                app.UseHsts();
-            }
+
+            app.UseHsts(env);
+
+            //app.UseCors("SiteCorsPolicy");
 
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
 
-            // اگ بعد از اتورایز بزاریم فقط کسانی میتونن الماه رو ببینن که اتورایز شدن
             app.UseElmah();
 
             app.UseMvc();

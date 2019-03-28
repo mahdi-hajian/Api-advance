@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 using Common.Exceptions;
 using System;
 using System.Collections.Generic;
+using Common;
 
 namespace Data.Repositories
 {
-    public class UserRepository : Repository<User>, IUserRepository
+    public class UserRepository : Repository<User>, IUserRepository, IScopedDependency
     {
         public UserRepository(ApplicationDbContext dbContext) : base(dbContext)
         {

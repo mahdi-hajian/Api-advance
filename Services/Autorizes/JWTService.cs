@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Services.Autorizes
 {
-    public class JWTService : IJWTService
+    public class JWTService : IJWTService, IScopedDependency
     {
         private readonly SiteSettings _siteSetting;
         private readonly SignInManager<User> _signInManager;

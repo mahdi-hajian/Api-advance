@@ -11,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Services.Interfaces;
 using Services.Models;
-using Services.UserService;
 using WebFramework.Api;
 using WebFramework.Filter;
 

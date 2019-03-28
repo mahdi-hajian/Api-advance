@@ -1,4 +1,5 @@
-﻿using Entities;
+﻿using Common;
+using Entities;
 using Microsoft.AspNetCore.Identity;
 using Services.Interfaces;
 using Services.Models;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Services.UserService
 {
-    public class UserService : IUserService
+    public class UserService : IUserService, IScopedDependency
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;

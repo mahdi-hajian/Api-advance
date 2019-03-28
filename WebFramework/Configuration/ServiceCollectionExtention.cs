@@ -1,25 +1,73 @@
 ﻿using Common;
-using Common.Api;
-using Common.Exceptions;
 using Common.Utilities;
+using Data;
 using Data.Contracts;
+using ElmahCore.Mvc;
+using ElmahCore.Sql;
 using Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace WebFramework.Configuration
 {
     public static class ServiceCollectionExtention
     {
+        public static void AddSbContext(this IServiceCollection services, IConfiguration Configuration)
+        {
+
+            services.AddDbContext<ApplicationDbContext>(Options =>
+            {
+                Options.UseSqlServer((Configuration.GetConnectionString("DefaultConnection")));
+            });
+        }
+
+        public static void AddElmah(this IServiceCollection services, IConfiguration Configuration, SiteSettings _siteSetting)
+        {
+            services.AddElmah<SqlErrorLog>(options =>
+            {
+                options.Path = _siteSetting.ElmahPath;
+                options.ConnectionString = Configuration.GetConnectionString("ElmahError");
+            });
+        }
+
+        public static void AddCorsExtention(this IServiceCollection services)
+        {
+            // add "ClientDomain": "https://www.tabandesign.ir" in appsetting.json
+            // add app.UseCors("SiteCorsPolicy"); in Configure method
+
+            var corsBuilder = new CorsPolicyBuilder();
+            corsBuilder.AllowAnyHeader();
+            corsBuilder.AllowAnyMethod();
+            //corsBuilder.WithOrigins("https://www.tabandesign.ir"); // for a specific url. Don't add a forward slash on the end!
+            corsBuilder.AllowAnyOrigin(); // For anyone access.
+            corsBuilder.AllowCredentials();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("SiteCorsPolicy", corsBuilder.Build());
+            });
+        }
+
+        public static void AddMinimalMvc(this IServiceCollection services)
+        {
+            services.AddMvcCore()
+            .AddApiExplorer()
+            .AddAuthorization()
+            .AddFormatterMappings()
+            .AddDataAnnotations()
+            .AddJsonFormatters()
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+        }
+
         public static void AddJwtAuthentication(this IServiceCollection services, JwtSettings jwtSettings)
         {
             services.AddAuthentication(options =>
