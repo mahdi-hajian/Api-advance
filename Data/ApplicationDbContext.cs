@@ -1,8 +1,11 @@
 ﻿using Common.Utilities;
+using EFSecondLevelCache.Core;
+using EFSecondLevelCache.Core.Contracts;
 using Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -82,26 +85,70 @@ namespace Data
         #region replacestrignPersianBug
         public override int SaveChanges()
         {
+            this.ChangeTracker.DetectChanges();
+            var changedEntityNames = this.GetChangedEntityNames();
+
             _cleanString();
-            return base.SaveChanges();
+            var result = base.SaveChanges();
+            this.GetService<IEFCacheServiceProvider>().InvalidateCacheDependencies(changedEntityNames);
+
+            return result;
+
+            #region Old
+            //_cleanString();
+            //return base.SaveChanges();
+            #endregion
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {
+            this.ChangeTracker.DetectChanges();
+            var changedEntityNames = this.GetChangedEntityNames();
+
             _cleanString();
-            return base.SaveChanges(acceptAllChangesOnSuccess);
+            var result = base.SaveChanges(acceptAllChangesOnSuccess);
+            this.GetService<IEFCacheServiceProvider>().InvalidateCacheDependencies(changedEntityNames);
+
+            return result;
+
+            #region Old
+            //_cleanString();
+            //return base.SaveChanges(acceptAllChangesOnSuccess);
+            #endregion
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
+            this.ChangeTracker.DetectChanges();
+            var changedEntityNames = this.GetChangedEntityNames();
+
             _cleanString();
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+            var result = base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+            this.GetService<IEFCacheServiceProvider>().InvalidateCacheDependencies(changedEntityNames);
+
+            return result;
+
+            #region Old
+            //_cleanString();
+            //return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+            #endregion
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
+            this.ChangeTracker.DetectChanges();
+            var changedEntityNames = this.GetChangedEntityNames();
+
             _cleanString();
-            return base.SaveChangesAsync(cancellationToken);
+            var result = base.SaveChangesAsync(cancellationToken);
+            this.GetService<IEFCacheServiceProvider>().InvalidateCacheDependencies(changedEntityNames);
+
+            return result;
+
+            #region Old
+            //_cleanString();
+            //return base.SaveChangesAsync(cancellationToken);
+            #endregion
         }
 
         private void _cleanString()

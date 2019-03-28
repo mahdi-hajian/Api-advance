@@ -55,6 +55,8 @@ namespace MyApi
 
             services.AddCorsExtention();
 
+            services.AddCachingServiceExtention();
+
             // با این متد میشود این تنظیمات را داخل کانسترکتور ها دریافت کرد
             // مثال در کانسترکتور JWTSwrvice.cs
             services.Configure<SiteSettings>(Configuration.GetSection(nameof(SiteSettings)));
@@ -84,6 +86,8 @@ namespace MyApi
             app.UseEFSecondLevelCache();
 
             app.UseCors("SiteCorsPolicy");
+
+            app.UseEFSecondLevelCache();
 
             app.UseHttpsRedirection();
 

@@ -56,7 +56,7 @@ namespace MyApi.Controllers
 
             var list = await _repository.TableNoTracking.ProjectTo<PostDto>()
                 //.Where(postDto => postDto.Title.Contains("test") || postDto.CategoryName.Contains("test"))
-                .ToListAsync(cancellationToken);
+                .Cacheable().ToListAsync(cancellationToken);
 
             return Ok(list);
         }
@@ -65,7 +65,7 @@ namespace MyApi.Controllers
         public async Task<ApiResult<PostDto>> Get(Guid id, CancellationToken cancellationToken)
         {
             var dto = await _repository.TableNoTracking.ProjectTo<PostDto>()
-                .SingleOrDefaultAsync(p => p.Id == id, cancellationToken);
+                .Cacheable().SingleOrDefaultAsync(p => p.Id == id, cancellationToken);
 
             if (dto == null)
                 return NotFound();
@@ -89,7 +89,7 @@ namespace MyApi.Controllers
         [HttpPost]
         public async Task<ApiResult<PostDto>> Create(PostDto dto, CancellationToken cancellationToken)
         {
-            var model = Mapper.Map<Post>(dto);
+            Post model = Mapper.Map<Post>(dto);
 
             #region old code
             //var model = new Post
@@ -101,7 +101,19 @@ namespace MyApi.Controllers
             //};
             #endregion
 
-            await _repository.AddAsync(model, cancellationToken);
+            List<Post> aa = new List<Post>();
+            for (int i = 0; i < 5; i++)
+            {
+                aa.Add(new Post
+                {
+                    Title = Guid.NewGuid().ToString(),
+                    Id = Guid.NewGuid(),
+                    Description = i.ToString(),
+                    AuthorId = 2,
+                    CategoryId = 1
+                });
+            }
+            await _repository.AddRangeAsync(aa, cancellationToken);
 
             #region old code
             //await _repository.LoadReferenceAsync(model, p => p.Category, cancellationToken);
