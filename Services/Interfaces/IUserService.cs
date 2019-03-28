@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Services.Models;
+using Services.Models.Dtos;
 
 namespace Services.Interfaces
 {

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common.Utilities;
 
-namespace Services.Models
+namespace Services.Models.Dtos
 {
     public class UserDto : IValidatableObject
     {

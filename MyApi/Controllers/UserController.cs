@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Services.Interfaces;
 using Services.Models;
+using Services.Models.Dtos;
+using Services.Models.Identity;
 using WebFramework.Api;
 using WebFramework.Filter;
 
@@ -48,7 +50,7 @@ namespace MyApi.Controllers
             if (user == null)
                 return Unauthorized();
 
-            var isPasswordValid = await _userManager.CheckPasswordAsync(user, model.password);
+            var isPasswordValid = await _userManager.CheckPasswordAsync(user, model.Password);
             if (!isPasswordValid)
                 return Unauthorized();
 
@@ -58,9 +60,13 @@ namespace MyApi.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<List<User>> Get()
+        public async Task<ActionResult<List<User>>> Get()
         {
             var users = await userRepository.TableNoTracking.ToListAsync();
+            if (users == null)
+            {
+                return NotFound("کاربری وجود ندارد");
+            }
             return users;
         }
 

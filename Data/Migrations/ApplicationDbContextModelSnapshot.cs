@@ -93,8 +93,8 @@ namespace Data.Migrations
                     b.ToTable("Role");
 
                     b.HasData(
-                        new { Id = 1, ConcurrencyStamp = "08649e48-163f-430b-930d-27f4f1619379", Description = "ادمین اصلی سایت", Name = "Leader", NormalizedName = "LEADER" },
-                        new { Id = 2, ConcurrencyStamp = "55d4379a-f8d0-4159-b0e9-0882b431b68b", Description = "جانشین لیدر", Name = "Admin", NormalizedName = "ADMIN" }
+                        new { Id = 1, ConcurrencyStamp = "41f6d4e4-0550-4269-b4e0-2d897b2352ec", Description = "ادمین اصلی سایت", Name = "Leader", NormalizedName = "LEADER" },
+                        new { Id = 2, ConcurrencyStamp = "66a93ff6-378a-4ad6-8561-f10c3ab4a669", Description = "جانشین لیدر", Name = "Admin", NormalizedName = "ADMIN" }
                     );
                 });
 

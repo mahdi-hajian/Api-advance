@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Data.Migrations
 {
-    public partial class init : Migration
+    public partial class sdfsdgfdf : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -211,12 +211,12 @@ namespace Data.Migrations
             migrationBuilder.InsertData(
                 table: "Role",
                 columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
-                values: new object[] { 1, "08649e48-163f-430b-930d-27f4f1619379", "ادمین اصلی سایت", "Leader", "LEADER" });
+                values: new object[] { 1, "41f6d4e4-0550-4269-b4e0-2d897b2352ec", "ادمین اصلی سایت", "Leader", "LEADER" });
 
             migrationBuilder.InsertData(
                 table: "Role",
                 columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
-                values: new object[] { 2, "55d4379a-f8d0-4159-b0e9-0882b431b68b", "جانشین لیدر", "Admin", "ADMIN" });
+                values: new object[] { 2, "66a93ff6-378a-4ad6-8561-f10c3ab4a669", "جانشین لیدر", "Admin", "ADMIN" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Categories_ParentCategoryId",

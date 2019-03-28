@@ -107,6 +107,7 @@ namespace WebFramework.Configuration
                 {
                     OnTokenValidated = async context =>
                     {
+                        bool UpdateLastLogin = true;
                         var signInManager = context.HttpContext.RequestServices.GetRequiredService<SignInManager<User>>();
                         var userRepository = context.HttpContext.RequestServices.GetRequiredService<IUserRepository>();
 
@@ -116,7 +117,10 @@ namespace WebFramework.Configuration
 
                         var securityStamp = claimsIdentity.FindFirstValue(new ClaimsIdentityOptions().SecurityStampClaimType);
                         if (!securityStamp.HasValue())
+                        {
                             context.Fail("This token has no secuirty stamp");
+                            UpdateLastLogin = false;
+                        }
 
                         //Find user and token from database and perform your custom validation
                         var userId = claimsIdentity.GetUserId<int>();
@@ -127,12 +131,20 @@ namespace WebFramework.Configuration
 
                         var validatedUser = await signInManager.ValidateSecurityStampAsync(context.Principal);
                         if (validatedUser == null)
+                        {
                             context.Fail("Token secuirty stamp is not valid.");
-
-                        if (!user.IsActive)
-                            context.Fail("User is not active.");
-
-                        await userRepository.UpdateLastLoginDateAsync(user, context.HttpContext.RequestAborted);
+                            UpdateLastLogin = false;
+                        }
+                        if (user != null)
+                        {
+                            if (!user.IsActive)
+                            {
+                                context.Fail("User is not active.");
+                                UpdateLastLogin = false;
+                            }
+                            if (UpdateLastLogin)
+                                await userRepository.UpdateLastLoginDateAsync(user, context.HttpContext.RequestAborted);
+                        }
                     }
                 };
             });
