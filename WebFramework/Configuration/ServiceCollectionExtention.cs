@@ -57,16 +57,6 @@ namespace WebFramework.Configuration
                 options.TokenValidationParameters = validationParameters;
                 options.Events = new JwtBearerEvents
                 {
-                    OnAuthenticationFailed = context =>
-                    {
-                        //var logger = context.HttpContext.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(JwtBearerEvents));
-                        //logger.LogError("Authentication failed.", context.Exception);
-
-                        if (context.Exception != null)
-                            throw new AppException(ApiResultStatusCode.UnAuthorized, "Authentication failed.", HttpStatusCode.Unauthorized, context.Exception, null);
-
-                        return Task.CompletedTask;
-                    },
                     OnTokenValidated = async context =>
                     {
                         var signInManager = context.HttpContext.RequestServices.GetRequiredService<SignInManager<User>>();
@@ -95,17 +85,6 @@ namespace WebFramework.Configuration
                             context.Fail("User is not active.");
 
                         await userRepository.UpdateLastLoginDateAsync(user, context.HttpContext.RequestAborted);
-                    },
-                    OnChallenge = context =>
-                    {
-                        //var logger = context.HttpContext.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(JwtBearerEvents));
-                        //logger.LogError("OnChallenge error", context.Error, context.ErrorDescription);
-
-                        if (context.AuthenticateFailure != null)
-                            throw new AppException(ApiResultStatusCode.UnAuthorized, "Authenticate failure.", HttpStatusCode.Unauthorized, context.AuthenticateFailure, null);
-                        throw new AppException(ApiResultStatusCode.UnAuthorized, "You are unauthorized to access this resource.", HttpStatusCode.Unauthorized);
-
-                        //return Task.CompletedTask;
                     }
                 };
             });

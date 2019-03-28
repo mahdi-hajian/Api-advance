@@ -7,6 +7,7 @@ using ElmahCore.Sql;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,16 +21,15 @@ namespace MyApi
 {
     public class Startup
     {
+        private readonly SiteSettings _siteSetting;
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
 
             _siteSetting = configuration.GetSection(nameof(SiteSettings)).Get<SiteSettings>();
         }
-
-        public IConfiguration Configuration { get; }
-
-        private readonly SiteSettings _siteSetting;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -43,6 +43,7 @@ namespace MyApi
                 Options.UseSqlServer((Configuration.GetConnectionString("DefaultConnection")));
             });
 
+            services.AddCustomIdentity(_siteSetting.IdentitySettings);
 
             services.AddElmah<SqlErrorLog>(options =>
             {
@@ -50,15 +51,14 @@ namespace MyApi
                 options.ConnectionString = Configuration.GetConnectionString("ElmahError");
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IJWTService, JWTService>();
             services.AddScoped<IUserService, UserService>();
 
             services.AddJwtAuthentication(_siteSetting.JwtSettings);
-            services.AddCustomIdentity(_siteSetting.IdentitySettings);
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
