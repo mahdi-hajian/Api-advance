@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common.Utilities;
 
-namespace MyApi.Models
+namespace Services.Models
 {
     public class UserDto : IValidatableObject
     {
@@ -24,6 +24,12 @@ namespace MyApi.Models
         [MaxLength(100)]
         [Display(Name = "نام کامل")]
         public string FullName { get; set; }
+
+
+        [Required(ErrorMessage = "{0} اجباری میباشد")]
+        [Display(Name = "ایمیل")]
+        [EmailAddress(ErrorMessage = "{0} را درست وارد کنید")]
+        public string Email { get; set; }
 
         public int Age { get; set; }
 

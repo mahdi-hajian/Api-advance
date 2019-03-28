@@ -10,20 +10,23 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Services.Autorizes
 {
     public class JWTService : IJWTService
     {
         private readonly SiteSettings _siteSetting;
+        private readonly SignInManager<User> _signInManager;
 
         // گرفتن یک ولیو از اپ ستینگ
-        public JWTService(IOptionsSnapshot<SiteSettings> settings)
+        public JWTService(IOptionsSnapshot<SiteSettings> settings, SignInManager<User> signInManager)
         {
             _siteSetting = settings.Value;
+            _signInManager = signInManager;
         }
 
-        public string Generate(User user, List<string> userRoles)
+        public async Task<string> GenerateAsync(User user)
         {
             var securityKey = Encoding.UTF8.GetBytes(_siteSetting.JwtSettings.SecretKey); // longer that 16 character
             var signinCredentials = new SigningCredentials(new SymmetricSecurityKey(securityKey), SecurityAlgorithms.HmacSha256Signature);
@@ -47,7 +50,7 @@ namespace Services.Autorizes
                 // رمزنگاری توکن
                 EncryptingCredentials = encryptingCredentials,
                 // متغیر های درون توکن
-                Subject = new  ClaimsIdentity(_getClaims(user, userRoles)),
+                Subject = new  ClaimsIdentity(await _getClaimsAsync(user)),
             };
 
             // غیرفعال کردن تغییر نام فیلد های توکن
@@ -61,26 +64,24 @@ namespace Services.Autorizes
             return jwt;
         }
 
-        private IEnumerable<Claim> _getClaims(User user, List<string> userRoles)
+        private async Task<IEnumerable<Claim>> _getClaimsAsync(User user)
         {
-            // هرچیزی میتواند باشد ولی اصولش این است
-            var securityStampClaimType = new ClaimsIdentityOptions().SecurityStampClaimType;
-
-            var list = new List<Claim> {
-                // .net claim
-                new Claim(ClaimTypes.Name , user.UserName),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                // .jwt claim
-                new Claim(JwtRegisteredClaimNames.Gender, user.Gender.ToDisplay()),
-
-                new Claim(securityStampClaimType, user.SecurityStamp.ToString())
-            };
-            foreach (var item in userRoles)
-            {
-                list.Add(new Claim(ClaimTypes.Role, item));
-            }
-
+            var result = await _signInManager.ClaimsFactory.CreateAsync(user);
+            //add custom claims
+            List<Claim> list = new List<Claim>(result.Claims);
             return list;
+
+            //var securityStampClaimType = new ClaimsIdentityOptions().SecurityStampClaimType;
+
+            //var list = new List<Claim>
+            //{
+            //    new Claim(ClaimTypes.Name, user.UserName),
+            //    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            //    new Claim(ClaimTypes.MobilePhone, "09123456987"),
+            //    new Claim(securityStampClaimType, user.SecurityStamp.ToString())
+            //};
+
+            //return list;
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Common.Utilities;
 using Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -9,10 +11,10 @@ using System.Threading.Tasks;
 
 namespace Data
 {
-    public class ApplicationDbContext: DbContext
+    public class ApplicationDbContext : IdentityDbContext<User, Role, int>
     {
         // آگر کانکشن استرینگ رو در استارتاپ ساختیم باید این سازنده باشد
-        public ApplicationDbContext(DbContextOptions options): base (options)
+        public ApplicationDbContext(DbContextOptions options) : base(options)
         {
 
         }
@@ -25,6 +27,7 @@ namespace Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // باید اولین متد باشد
             base.OnModelCreating(modelBuilder);
 
             // define assembly interface
@@ -45,8 +48,38 @@ namespace Data
 
             // اسم جدول هارو جمع میکند مثلا یوزر میشود یوزرز چون رجیستر آل اینتیتیز همان اسم کلاس رو تیبل میکند
             modelBuilder.AddPluralizingTableNameConvention();
+
+            #region seed
+            modelBuilder.Entity<Role>().HasData(
+                new Role
+                {
+                    Id = 1,
+                    Name = "Leader",
+                    Description = "ادمین اصلی سایت",
+                    NormalizedName = "LEADER"
+                },
+                new Role
+                {
+                    Id = 2,
+                    Name = "Admin",
+                    Description = "جانشین لیدر",
+                    NormalizedName = "ADMIN"
+                }
+                );
+            #endregion
+
+            #region Change Name
+            modelBuilder.Entity<IdentityRoleClaim<int>>().ToTable("RoleClaim");
+            modelBuilder.Entity<Role>().ToTable("Role");
+            modelBuilder.Entity<IdentityUserClaim<int>>().ToTable("UserClaim");
+            modelBuilder.Entity<IdentityUserLogin<int>>().ToTable("UserLogin");
+            modelBuilder.Entity<User>().ToTable("User");
+            modelBuilder.Entity<IdentityUserRole<int>>().ToTable("UserRole");
+            modelBuilder.Entity<IdentityUserToken<int>>().ToTable("UserToken");
+            #endregion
         }
 
+        #region replacestrignPersianBug
         public override int SaveChanges()
         {
             _cleanString();
@@ -98,5 +131,7 @@ namespace Data
                 }
             }
         }
+
+        #endregion
     }
 }

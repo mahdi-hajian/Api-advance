@@ -23,21 +23,21 @@ namespace Data.Repositories
             return Table.Where(c => c.UserName == userName && c.PasswordHash == passwordHash).SingleOrDefaultAsync(cancellationToken);
         }
 
-        public async Task AddAsync(User user, string password, CancellationToken cancellationToken)
-        {
+        //public async Task AddAsync(User user, string password, CancellationToken cancellationToken)
+        //{
 
-            var exist = await TableNoTracking.AnyAsync(c => c.UserName == user.UserName);
-            if (exist)
-                throw new BadRequestException("نام کاربری تکراری است");
+        //    var exist = await TableNoTracking.AnyAsync(c => c.UserName == user.UserName);
+        //    if (exist)
+        //        throw new BadRequestException("نام کاربری تکراری است");
 
-            var passwordHash = SecurityHelper.GetSha256Hash(password);
-            user.PasswordHash = passwordHash;
-            await base.AddAsync(user, cancellationToken);
-        }
+        //    var passwordHash = SecurityHelper.GetSha256Hash(password);
+        //    user.PasswordHash = passwordHash;
+        //    await base.AddAsync(user, cancellationToken);
+        //}
 
         public Task UpdateSecuirtyStampAsync(User user, CancellationToken cancellationToken)
         {
-            user.SecurityStamp = Guid.NewGuid();
+            user.SecurityStamp = Guid.NewGuid().ToString();
             return UpdateAsync(user, cancellationToken);
         }
 

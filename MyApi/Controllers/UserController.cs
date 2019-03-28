@@ -1,27 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using Common;
-using Common.Exceptions;
-using Data;
 using Data.Contracts;
-using Data.Repositories;
-using ElmahCore;
 using Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.JsonWebTokens;
-using MyApi.Models;
-using Services.Autorizes;
 using Services.Interfaces;
 using Services.Models;
+using Services.UserService;
 using WebFramework.Api;
 using WebFramework.Filter;
 
@@ -35,22 +25,35 @@ namespace MyApi.Controllers
         private readonly IUserRepository userRepository;
         private readonly ILogger<UserController> logger;
         private readonly IJWTService _jWTService;
+        private readonly IUserService _userService;
+        private readonly UserManager<User> _userManager;
+        private readonly RoleManager<Role> _roleManager;
+        private readonly SignInManager<User> _signInManager;
 
-
-        public UserController(IUserRepository userRepository, ILogger<UserController> logger, IJWTService JWTService)
+        public UserController(IUserRepository userRepository, ILogger<UserController> logger, IJWTService JWTService, IUserService userService,
+            UserManager<User> userManager, RoleManager<Role> roleManager, SignInManager<User> signInManager)
         {
             this.userRepository = userRepository;
             this.logger = logger;
             _jWTService = JWTService;
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _signInManager = signInManager;
+            _userService = userService;
         }
 
         [HttpGet("[action]")]
         public async Task<ApiResult<string>> Token(LoginModel model, CancellationToken cancellationToken)
         {
-            var user = await userRepository.GetByUserAndPass(model.UserName, model.password, cancellationToken);
+            var user = await _userManager.FindByNameAsync(model.UserName);
             if (user == null)
                 return Unauthorized();
-            var jwt = _jWTService.Generate(user, new List<string> { "Admin", "Manager" });
+
+            var isPasswordValid = await _userManager.CheckPasswordAsync(user, model.password);
+            if (!isPasswordValid)
+                return Unauthorized();
+
+            var jwt = await _jWTService.GenerateAsync(user);
             return jwt;
         }
 
@@ -67,7 +70,9 @@ namespace MyApi.Controllers
         public async Task<ApiResult<User>> Get(int id, [FromHeader] string Authorization, CancellationToken cancellationToken)
         {
             //به این صورت هم میشود دریافت کرد
-            //var cancellationToken = HttpContext.RequestAborted;
+            var cancellationToken2 = HttpContext.RequestAborted;
+            // دریافت کاربر با توکن
+            User user2 = await _userManager.GetUserAsync(HttpContext.User);
 
             var user = await userRepository.GetByIdAsync(cancellationToken, id);
             if (user == null)
@@ -77,18 +82,9 @@ namespace MyApi.Controllers
 
 
         [HttpPost]
-        public async Task<ApiResult<User>> Create(UserDto userDto, CancellationToken cancellationToken)
+        public async Task<IdentityResult> Create(UserDto userDto)
         {
-            var user = new User
-            {
-                UserName = userDto.UserName,
-                FullName = userDto.FullName,
-                Age = userDto.Age,
-                Gender = userDto.Gender
-            };
-            await userRepository.AddAsync(user, userDto.Password, cancellationToken);
-            logger.LogError("کاربر ساخته شد");
-            return Ok(user);
+            return await _userService.AddAsync(userDto);
         }
 
         [HttpPut]

@@ -3,6 +3,7 @@ using Common.Api;
 using Common.Exceptions;
 using Common.Utilities;
 using Data.Contracts;
+using Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +22,8 @@ namespace WebFramework.Configuration
     {
         public static void AddJwtAuthentication(this IServiceCollection services, JwtSettings jwtSettings)
         {
-            services.AddAuthentication(options => {
+            services.AddAuthentication(options =>
+            {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -30,29 +32,44 @@ namespace WebFramework.Configuration
                 var secretkey = Encoding.UTF8.GetBytes(jwtSettings.SecretKey);
                 var encryptionkey = Encoding.UTF8.GetBytes(jwtSettings.Encryptkey);
 
-                options.SaveToken = true;
-                options.RequireHttpsMetadata = false ;
-                options.TokenValidationParameters = new TokenValidationParameters()
+                var validationParameters = new TokenValidationParameters
                 {
-                    // تلورانس زمان توکنه ک صفر میکنیم ک دقیق باشد
-                    ClockSkew = TimeSpan.Zero, // default 5 min
-                    RequireSignedTokens = true, // توکن ها حتما امضا داشته باشند
-                    ValidateIssuer = true, // default false
-                    ValidateAudience = true, // default false
-                    ValidAudience = jwtSettings.Audience,
-                    ValidIssuer = jwtSettings.Issuer,
-                    ValidateLifetime = true, // زمان اکسپایر شدن رو بررسی کند یا ن
-                    RequireExpirationTime = false, // حتما زمان اکسپایر شدن را داشته باشد
-                    ValidateIssuerSigningKey = true, // سیگنیچر مورد بررسی قرار بگیرد
+                    ClockSkew = TimeSpan.Zero, // default: 5 min
+                    RequireSignedTokens = true,
+
+                    ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(secretkey),
+
+                    RequireExpirationTime = true,
+                    ValidateLifetime = true,
+
+                    ValidateAudience = true, //default : false
+                    ValidAudience = jwtSettings.Audience,
+
+                    ValidateIssuer = true, //default : false
+                    ValidIssuer = jwtSettings.Issuer,
+
                     TokenDecryptionKey = new SymmetricSecurityKey(encryptionkey)
                 };
+
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = validationParameters;
                 options.Events = new JwtBearerEvents
                 {
-                    
+                    OnAuthenticationFailed = context =>
+                    {
+                        //var logger = context.HttpContext.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(JwtBearerEvents));
+                        //logger.LogError("Authentication failed.", context.Exception);
+
+                        if (context.Exception != null)
+                            throw new AppException(ApiResultStatusCode.UnAuthorized, "Authentication failed.", HttpStatusCode.Unauthorized, context.Exception, null);
+
+                        return Task.CompletedTask;
+                    },
                     OnTokenValidated = async context =>
                     {
-                        //var applicationSignInManager = context.HttpContext.RequestServices.GetRequiredService<IApplicationSignInManager>();
+                        var signInManager = context.HttpContext.RequestServices.GetRequiredService<SignInManager<User>>();
                         var userRepository = context.HttpContext.RequestServices.GetRequiredService<IUserRepository>();
 
                         var claimsIdentity = context.Principal.Identity as ClaimsIdentity;
@@ -67,17 +84,28 @@ namespace WebFramework.Configuration
                         var userId = claimsIdentity.GetUserId<int>();
                         var user = await userRepository.GetByIdAsync(context.HttpContext.RequestAborted, userId);
 
-                        if (user.SecurityStamp != Guid.Parse(securityStamp))
-                            context.Fail("Token secuirty stamp is not valid.");
-
-                        //var validatedUser = await applicationSignInManager.ValidateSecurityStampAsync(context.Principal);
-                        //if (validatedUser == null)
+                        //if (user.SecurityStamp != Guid.Parse(securityStamp))
                         //    context.Fail("Token secuirty stamp is not valid.");
+
+                        var validatedUser = await signInManager.ValidateSecurityStampAsync(context.Principal);
+                        if (validatedUser == null)
+                            context.Fail("Token secuirty stamp is not valid.");
 
                         if (!user.IsActive)
                             context.Fail("User is not active.");
 
                         await userRepository.UpdateLastLoginDateAsync(user, context.HttpContext.RequestAborted);
+                    },
+                    OnChallenge = context =>
+                    {
+                        //var logger = context.HttpContext.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(JwtBearerEvents));
+                        //logger.LogError("OnChallenge error", context.Error, context.ErrorDescription);
+
+                        if (context.AuthenticateFailure != null)
+                            throw new AppException(ApiResultStatusCode.UnAuthorized, "Authenticate failure.", HttpStatusCode.Unauthorized, context.AuthenticateFailure, null);
+                        throw new AppException(ApiResultStatusCode.UnAuthorized, "You are unauthorized to access this resource.", HttpStatusCode.Unauthorized);
+
+                        //return Task.CompletedTask;
                     }
                 };
             });

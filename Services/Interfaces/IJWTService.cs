@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Entities;
 
 namespace Services.Interfaces
 {
     public interface IJWTService
     {
-        string Generate(User user, List<string> userRoles);
+        Task<string> GenerateAsync(User user);
     }
 }

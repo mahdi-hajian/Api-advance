@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Services.Autorizes;
 using Services.Interfaces;
+using Services.UserService;
 using WebFramework.Configuration;
 using WebFramework.Middleware;
 
@@ -54,8 +55,10 @@ namespace MyApi
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IJWTService, JWTService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddJwtAuthentication(_siteSetting.JwtSettings);
+            services.AddCustomIdentity(_siteSetting.IdentitySettings);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,7 +75,6 @@ namespace MyApi
                 //app.UseExceptionHandler();
                 app.UseHsts();
             }
-
 
             app.UseHttpsRedirection();
 

@@ -1,23 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Entities
 {
-    public class Role: IEntity
+    public class Role: IdentityRole<int>, IEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
-        [Required]
-        [MaxLength(50)]
-        public string Name { get; set; }
-
-        [Required]
-        [MaxLength(100)]
         public string Description { get; set; }
+    }
+
+    public class RoleConfiguration : IEntityTypeConfiguration<Role>
+    {
+        public void Configure(EntityTypeBuilder<Role> builder)
+        {
+            builder.Property(c => c.Name).IsRequired().HasMaxLength(50);
+            builder.Property(c => c.Description).IsRequired();
+        }
     }
 }

@@ -1,29 +1,19 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entities
 {
-    public class User: IEntity
+    public class User: IdentityUser<int>, IEntity
     {
         public User()
         {
             IsActive = true;
-            SecurityStamp = Guid.NewGuid();
         }
-
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
-        [Required]
-        [MaxLength(100)]
-        public string UserName { get; set; }
-
-        [Required]
-        [MaxLength(500)]
-        public string PasswordHash { get; set; }
 
         [Required]
         [MaxLength(100)]
@@ -38,8 +28,15 @@ namespace Entities
         public DateTimeOffset? LastLoginDate { get; set; }
 
         public ICollection<Post> Posts { get; set; }
+    }
 
-        public Guid SecurityStamp { get; set; }
+    public class UserConfiguration : IEntityTypeConfiguration<User>
+    {
+        public void Configure(EntityTypeBuilder<User> builder)
+        {
+            builder.Property(c => c.UserName).HasMaxLength(100);
+            builder.Property(c => c.FullName).IsRequired();
+        }
     }
 
     public enum GenderType
