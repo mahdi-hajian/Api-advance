@@ -43,7 +43,6 @@ namespace MyApi
                 Options.UseSqlServer((Configuration.GetConnectionString("DefaultConnection")));
             });
 
-            services.AddCustomIdentity(_siteSetting.IdentitySettings);
 
             services.AddElmah<SqlErrorLog>(options =>
             {
@@ -56,9 +55,11 @@ namespace MyApi
             services.AddScoped<IJWTService, JWTService>();
             services.AddScoped<IUserService, UserService>();
 
-            services.AddJwtAuthentication(_siteSetting.JwtSettings);
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            // ترتیب بین این دو مورد پایین مهم است
+            services.AddCustomIdentity(_siteSetting.IdentitySettings);
+            services.AddJwtAuthentication(_siteSetting.JwtSettings);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
