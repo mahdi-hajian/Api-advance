@@ -20,6 +20,7 @@ using WebFramework.Filter;
 
 namespace MyApi.Controllers.v1
 {
+    [ApiVersion(version:"1")]
     [Authorize]
     public class UserController : CustomBaseController
     {

@@ -5,6 +5,27 @@
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>E:\MyProject\MyApi\MyApi\MyApi.xml</DocumentationFile>
+    <OutputPath>bin/Debug/</OutputPath>
+    <NoWarn>1701;1702;CS1591;</NoWarn>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\v1\**" />
+    <Content Remove="Controllers\v1\**" />
+    <EmbeddedResource Remove="Controllers\v1\**" />
+    <None Remove="Controllers\v1\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Controllers\v1\CategoriesController.cs" />
+    <Compile Include="Controllers\v1\OldPostsController.cs" />
+    <Compile Include="Controllers\v1\PostsController.cs" />
+    <Compile Include="Controllers\v1\UserController.cs" />
+  </ItemGroup>
+
   <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>
@@ -26,6 +47,12 @@
     <Content Update="web.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="MyApi.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

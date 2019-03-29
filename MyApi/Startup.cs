@@ -11,6 +11,7 @@ using WebFramework.Configuration;
 using WebFramework.Configuration.Caching_configuraion_Extention;
 using WebFramework.CustomMapping;
 using WebFramework.Middleware;
+using WebFramework.Swagger;
 
 namespace MyApi
 {
@@ -53,6 +54,8 @@ namespace MyApi
 
             services.AddCustomApiVersioning();
 
+            services.AddSwagger();
+
             // ترتیب بین این دو مورد پایین مهم است
             services.AddCustomIdentity(_siteSetting.IdentitySettings);
             services.AddJwtAuthentication(_siteSetting.JwtSettings);
@@ -74,6 +77,8 @@ namespace MyApi
             app.UseElmah();
 
             app.UseCors("SiteCorsPolicy");
+
+            app.UseSwaggerAndUI();
 
             app.UseEFSecondLevelCache();
 

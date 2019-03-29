@@ -15,6 +15,7 @@ using WebFramework.Filter;
 
 namespace WebFramework.Api
 {
+    [ApiVersion(version: "1")]
     public class CrudController<TDto, TSelectDto, TEntity, TKey> : CustomBaseController
         where TDto : BaseDto<TDto, TEntity, TKey>, new()
         where TSelectDto : BaseDto<TSelectDto, TEntity, TKey>, new()

@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Linq;
 using System.Security.Claims;
@@ -156,6 +157,7 @@ namespace WebFramework.Configuration
         {
             services.AddApiVersioning(option =>
             {
+                #region Option
                 //option.AssumeDefaultVersionWhenUnspecified = true;
                 //option.DefaultApiVersion = new ApiVersion(1, 0);
 
@@ -173,6 +175,7 @@ namespace WebFramework.Configuration
 
                 //option.ApiVersionReader = ApiVersionReader.Combine(new QueryStringApiVersionReader("api-version"), new UrlSegmentApiVersionReader())
                 // combine of [querystring] & [urlsegment]
+                #endregion
 
                 option.ReportApiVersions = true;
             });

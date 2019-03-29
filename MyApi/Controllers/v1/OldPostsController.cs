@@ -18,6 +18,8 @@ using WebFramework.Filter;
 namespace MyApi.Controllers.v1
 {
     [Authorize]
+    [Obsolete]
+    [ApiVersion(version: "1")]
     public class OldPostsController : CustomBaseController
     {
         private readonly IRepository<Post> _repository;
