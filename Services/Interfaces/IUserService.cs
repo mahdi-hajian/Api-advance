@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
+using Entities;
 using Microsoft.AspNetCore.Identity;
 using Services.Models;
-using Services.Models.Dtos;
 
 namespace Services.Interfaces
 {
     public interface IUserService
     {
-        Task<IdentityResult> AddAsync(UserDto userDto);
+        Task<IdentityResult> AddAsync(User model, string password);
     }
 }

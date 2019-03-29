@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace WebFramework.Caching
+namespace WebFramework.Configuration.Caching_configuraion_Extention
 {
     public static class CacheService
     {
@@ -20,7 +20,7 @@ namespace WebFramework.Caching
                 new ConfigurationBuilder()
                         .WithJsonSerializer()
                         .WithMicrosoftMemoryCacheHandle(instanceName: "MemoryCache1")
-                        .WithExpiration(ExpirationMode.Absolute, TimeSpan.FromMinutes(10))
+                        .WithExpiration(ExpirationMode.Absolute, TimeSpan.FromMinutes(5))
                         .Build());
 
             // Add Redis cache service provider

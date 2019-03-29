@@ -3,7 +3,6 @@ using Entities;
 using Microsoft.AspNetCore.Identity;
 using Services.Interfaces;
 using Services.Models;
-using Services.Models.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -23,17 +22,9 @@ namespace Services.UserService
             _roleManager = roleManager;
         }
 
-        public async Task<IdentityResult> AddAsync(UserDto userDto)
+        public async Task<IdentityResult> AddAsync(User model, string password)
         {
-            var user = new User
-            {
-                UserName = userDto.UserName,
-                FullName = userDto.FullName,
-                Age = userDto.Age,
-                Gender = userDto.Gender,
-                Email = userDto.Email
-            };
-            var result = await _userManager.CreateAsync(user, userDto.Password);
+            var result = await _userManager.CreateAsync(model, password);
             return result;
         }
     }

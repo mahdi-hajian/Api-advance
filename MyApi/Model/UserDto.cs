@@ -6,9 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Common.Utilities;
 
-namespace Services.Models.Dtos
+namespace MyApi.Models
 {
-    public class UserDto : IValidatableObject
+    public class UserDto // => User
     {
         [Required(ErrorMessage = "{0} اجباری میباشد")]
         [Display(Name = "نام کاربری")]

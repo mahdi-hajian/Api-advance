@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
+using Common;
 using Data.Contracts;
 using Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -9,9 +11,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using MyApi.Models;
 using Services.Interfaces;
 using Services.Models;
-using Services.Models.Dtos;
 using Services.Models.Identity;
 using WebFramework.Api;
 using WebFramework.Filter;
@@ -89,7 +91,11 @@ namespace MyApi.Controllers
         [HttpPost]
         public async Task<IdentityResult> Create(UserDto userDto)
         {
-            return await _userService.AddAsync(userDto);
+            //var user = Mapper.Map<User>(userDto);
+            var user = CustomAutoMapper<User>.GetFrom(userDto);
+
+
+            return await _userService.AddAsync(user, userDto.Password);
         }
 
         [HttpPut]

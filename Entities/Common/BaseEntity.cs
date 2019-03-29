@@ -12,9 +12,4 @@ namespace Entities
     {
         public TKey Id { get; set; }
     }
-
-    public abstract class BaseEntity : BaseEntity<int>
-    {
-    }
-
 }

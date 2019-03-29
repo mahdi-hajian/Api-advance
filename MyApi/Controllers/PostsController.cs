@@ -11,7 +11,7 @@ using Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Services.Models.Dtos;
+using MyApi.Models;
 using WebFramework.Api;
 using WebFramework.Filter;
 
@@ -33,6 +33,14 @@ namespace MyApi.Controllers
         [HttpGet]
         public async Task<ActionResult<List<PostDto>>> Get(CancellationToken cancellationToken)
         {
+            //var postDto = new PostDto();
+            //Create
+            //var post = postDto.ToEntity(); // DTO => Entity
+            //Update
+            //var updatePost = postDto.ToEntity(post); // DTO => Entity (an exist)
+            //GetById
+            //var postDto = PostDto.FromEntity(model); // Entity => DTO
+
             #region old code
             //var posts = await _repository.TableNoTracking
             //    .Include(p => p.Category).Include(p => p.Author).ToListAsync(cancellationToken);
@@ -89,7 +97,8 @@ namespace MyApi.Controllers
         [HttpPost]
         public async Task<ApiResult<PostDto>> Create(PostDto dto, CancellationToken cancellationToken)
         {
-            Post model = Mapper.Map<Post>(dto);
+            //Post model = Mapper.Map<Post>(dto);
+            var model = dto.ToEntity();
 
             #region old code
             //var model = new Post
@@ -101,19 +110,7 @@ namespace MyApi.Controllers
             //};
             #endregion
 
-            List<Post> aa = new List<Post>();
-            for (int i = 0; i < 5; i++)
-            {
-                aa.Add(new Post
-                {
-                    Title = Guid.NewGuid().ToString(),
-                    Id = Guid.NewGuid(),
-                    Description = i.ToString(),
-                    AuthorId = 2,
-                    CategoryId = 1
-                });
-            }
-            await _repository.AddRangeAsync(aa, cancellationToken);
+            await _repository.AddAsync(model, cancellationToken);
 
             #region old code
             //await _repository.LoadReferenceAsync(model, p => p.Category, cancellationToken);
@@ -156,7 +153,8 @@ namespace MyApi.Controllers
         {
             var model = await _repository.GetByIdAsync(cancellationToken, id);
 
-            Mapper.Map(dto, model);
+            //Mapper.Map(dto, model);
+            model = dto.ToEntity(model);
 
             #region old code
             //model.Title = dto.Title;

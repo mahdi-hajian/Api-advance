@@ -1,31 +1,15 @@
-﻿using Autofac;
-using Autofac.Extensions.DependencyInjection;
-using AutoMapper;
-using CacheManager.Core;
-using Common;
-using Data;
-using Data.Contracts;
-using Data.Repositories;
+﻿using Common;
 using EFSecondLevelCache.Core;
 using ElmahCore.Mvc;
-using ElmahCore.Sql;
-using Entities;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using Services.Autorizes;
-using Services.Interfaces;
-using Services.Models.Dtos;
-using Services.UserService;
 using System;
-using WebFramework.Caching;
 using WebFramework.Configuration;
+using WebFramework.Configuration.Caching_configuraion_Extention;
+using WebFramework.CustomMapping;
 using WebFramework.Middleware;
 
 namespace MyApi
@@ -39,11 +23,13 @@ namespace MyApi
         {
             Configuration = configuration;
 
-            Mapper.Initialize(config => {
-                config.CreateMap<Post, PostDto>().ReverseMap()
-                .ForMember(p=>p.Author, o=>o.Ignore())
-                .ForMember(p=>p.Category, o=>o.Ignore());
-            });
+            AutoMapperConfiguration.InitializeAutoMapper();
+
+            //Mapper.Initialize(config => {
+            //    config.CreateMap<Post, PostDto>().ReverseMap()
+            //    .ForMember(p=>p.Author, o=>o.Ignore())
+            //    .ForMember(p=>p.Category, o=>o.Ignore());
+            //});
 
             _siteSetting = configuration.GetSection(nameof(SiteSettings)).Get<SiteSettings>();
         }
