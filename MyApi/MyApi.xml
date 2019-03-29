@@ -4,43 +4,13 @@
         <name>MyApi</name>
     </assembly>
     <members>
-        <member name="T:MyApi.Controllers.v2.PostsController">
+        <member name="M:MyApi.Controllers.v1.UserController.Token(MyApi.Model.TokenRequest,System.Threading.CancellationToken)">
             <summary>
-            version 2 posts method
+            loging method
             </summary>
-        </member>
-        <member name="M:MyApi.Controllers.v2.PostsController.#ctor(Data.Contracts.IRepository{Entities.Post})">
-            <summary>
-            constractor
-            </summary>
-            <param name="repository"></param>
-        </member>
-        <member name="M:MyApi.Controllers.v2.PostsController.Create(MyApi.Models.PostDto,System.Threading.CancellationToken)">
-            <summary>
-            ساخت پست
-            </summary>
-            <param name="dto"></param>
+            <param name="model"></param>
             <param name="cancellationToken"></param>
             <returns></returns>
-        </member>
-        <member name="M:MyApi.Controllers.v2.PostsController.GetAsyncv2(System.Threading.CancellationToken)">
-            <summary>
-            default get method
-            get all posts
-            </summary>
-            <param name="cancellationToken"></param>
-            <returns>all posts with parent and author</returns>
-        </member>
-        <member name="T:MyApi.Controllers.v1.CategoriesController">
-            <summary>
-            کنترلر دسته بندی ها
-            </summary>
-        </member>
-        <member name="M:MyApi.Controllers.v1.CategoriesController.#ctor(Data.Contracts.IRepository{Entities.Category})">
-            <summary>
-            سازنده کلاس
-            </summary>
-            <param name="repository"></param>
         </member>
         <member name="T:MyApi.Models.CategoryDto">
             <summary>

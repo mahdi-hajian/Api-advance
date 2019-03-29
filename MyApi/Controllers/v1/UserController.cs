@@ -11,7 +11,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using MyApi.Model;
 using MyApi.Models;
+using Services.Autorizes;
 using Services.Interfaces;
 using Services.Models;
 using Services.Models.Identity;
@@ -44,20 +46,29 @@ namespace MyApi.Controllers.v1
             _userService = userService;
         }
 
-        [HttpGet("[action]")]
+        /// <summary>
+        /// Login
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [HttpPost("[action]")]
         [AllowAnonymous]
-        public async Task<ApiResult<string>> Token(LoginModel model, CancellationToken cancellationToken)
+        public async Task<ActionResult> Token([FromForm]TokenRequest model, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByNameAsync(model.UserName);
+            if (!model.grant_type.Equals("password", StringComparison.OrdinalIgnoreCase))
+                return BadRequest("OAuth flow is not password.");
+
+            var user = await _userManager.FindByNameAsync(model.username);
             if (user == null)
                 return Unauthorized();
 
-            var isPasswordValid = await _userManager.CheckPasswordAsync(user, model.Password);
+            var isPasswordValid = await _userManager.CheckPasswordAsync(user, model.password);
             if (!isPasswordValid)
                 return Unauthorized();
 
             var jwt = await _jWTService.GenerateAsync(user);
-            return jwt;
+            return new JsonResult(jwt);
         }
 
         [HttpGet]

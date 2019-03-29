@@ -49,31 +49,32 @@ namespace WebFramework.Swagger
                 //options.OperationFilter<AddFileParamTypesOperationFilter>();
 
                 ////Set summary of action if not already set
-                //options.OperationFilter<ApplySummariesOperationFilter>();
+                options.OperationFilter<ApplySummariesOperationFilter>();
 
-                //#region Add UnAuthorized to Response
-                ////Add 401 response and security requirements (Lock icon) to actions that need authorization
-                //options.OperationFilter<UnauthorizedResponsesOperationFilter>(true, "Bearer");
-                //#endregion
+                #region Add UnAuthorized to Response
+                //Add 401 response and security requirements (Lock icon) to actions that need authorization
+                options.OperationFilter<UnauthorizedResponsesOperationFilter>(true, "Bearer");
+                #endregion
 
-                //#region Add Jwt Authentication
-                ////Add Lockout icon on top of swagger ui page to authenticate
-                ////options.AddSecurityDefinition("Bearer", new ApiKeyScheme
-                ////{
-                ////    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-                ////    Name = "Authorization",
-                ////    In = "header"
-                ////});
-                ////options.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>
-                ////{
-                ////    {"Bearer", new string[] { }}
-                ////});
-                //options.AddSecurityDefinition("Bearer", new OAuth2Scheme
+                #region Add Jwt Authentication
+                //Add Lockout icon on top of swagger ui page to authenticate
+                //options.AddSecurityDefinition("Bearer", new ApiKeyScheme
                 //{
-                //    Flow = "password",
-                //    TokenUrl = "https://localhost:5001/api/v1/users/Token",
+                //    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                //    Name = "Authorization",
+                //    In = "header"
                 //});
-                //#endregion
+                // روی همه متد ها قفل میگذارد
+                //options.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>
+                //{
+                //    {"Bearer", new string[] { }}
+                //});
+                options.AddSecurityDefinition("Bearer", new OAuth2Scheme
+                {
+                    Flow = "password",
+                    TokenUrl = "/api/v1/user/Token"
+                });
+                #endregion
 
                 #region Versioning
                 // Remove version parameter from all Operations

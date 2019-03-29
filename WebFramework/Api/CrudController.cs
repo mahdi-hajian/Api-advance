@@ -29,7 +29,7 @@ namespace WebFramework.Api
         }
 
         [HttpGet]
-        public virtual async Task<ActionResult<List<TSelectDto>>> GetAsync(CancellationToken cancellationToken)
+        public virtual async Task<ActionResult<List<TSelectDto>>> Get(CancellationToken cancellationToken)
         {
             var list = await _repository.TableNoTracking.ProjectTo<TSelectDto>()
                 .Cacheable().ToListAsync(cancellationToken);

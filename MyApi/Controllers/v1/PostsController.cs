@@ -24,10 +24,30 @@ namespace MyApi.Controllers.v1
             _repository = repository;
         }
 
-        [NonAction]
-        public override Task<ActionResult<List<PostDto>>> GetAsync(CancellationToken cancellationToken)
+        public override Task<ApiResult<PostDto>> Create(PostDto dto, CancellationToken cancellationToken)
         {
-            return base.GetAsync(cancellationToken);
+            return base.Create(dto, cancellationToken);
+        }
+
+        public override Task<ApiResult> Delete(Guid id, CancellationToken cancellationToken)
+        {
+            return base.Delete(id, cancellationToken);
+        }
+
+        public override Task<ApiResult<PostDto>> Get(Guid id, CancellationToken cancellationToken)
+        {
+            return base.Get(id, cancellationToken);
+        }
+
+        [NonAction]
+        public override Task<ActionResult<List<PostDto>>> Get(CancellationToken cancellationToken)
+        {
+            return base.Get(cancellationToken);
+        }
+
+        public override Task<ApiResult<PostDto>> Update(Guid id, PostDto dto, CancellationToken cancellationToken)
+        {
+            return base.Update(id, dto, cancellationToken);
         }
     }
 }

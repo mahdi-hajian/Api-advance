@@ -26,7 +26,7 @@ namespace Services.Autorizes
             _signInManager = signInManager;
         }
 
-        public async Task<string> GenerateAsync(User user)
+        public async Task<AccessToken> GenerateAsync(User user)
         {
             var securityKey = Encoding.UTF8.GetBytes(_siteSetting.JwtSettings.SecretKey); // longer that 16 character
             var signinCredentials = new SigningCredentials(new SymmetricSecurityKey(securityKey), SecurityAlgorithms.HmacSha256Signature);
@@ -59,9 +59,14 @@ namespace Services.Autorizes
             //JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var securityToken = tokenHandler.CreateToken(Descriptor);
-            var jwt = tokenHandler.WriteToken(securityToken);
-            return jwt;
+
+            //var securityToken = tokenHandler.CreateToken(Descriptor);
+            //var jwt = tokenHandler.WriteToken(securityToken);
+
+            var securityToken = tokenHandler.CreateJwtSecurityToken(Descriptor);
+
+
+            return new AccessToken(securityToken);
         }
 
         private async Task<IEnumerable<Claim>> _getClaimsAsync(User user)

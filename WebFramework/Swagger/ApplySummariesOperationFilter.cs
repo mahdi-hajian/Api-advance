@@ -85,10 +85,10 @@ namespace WebFramework.Swagger
             {
                 foreach (var name in names)
                 {
-                    if (actionName.Equals(name, StringComparison.OrdinalIgnoreCase) ||
-                        actionName.Equals($"{name}ById", StringComparison.OrdinalIgnoreCase) ||
-                        actionName.Equals($"{name}{singularizeName}", StringComparison.OrdinalIgnoreCase) ||
-                        actionName.Equals($"{name}{singularizeName}ById", StringComparison.OrdinalIgnoreCase))
+                    if (actionName.Split("_")[0].Equals(name, StringComparison.OrdinalIgnoreCase) ||
+                        actionName.Split("_")[0].Equals($"{name}ById", StringComparison.OrdinalIgnoreCase) ||
+                        actionName.Split("_")[0].Equals($"{name}{singularizeName}", StringComparison.OrdinalIgnoreCase) ||
+                        actionName.Split("_")[0].Equals($"{name}{singularizeName}ById", StringComparison.OrdinalIgnoreCase))
                     {
                         return true;
                     }
