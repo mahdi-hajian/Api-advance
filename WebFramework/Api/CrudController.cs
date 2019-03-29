@@ -87,4 +87,15 @@ namespace WebFramework.Api
             return Ok();
         }
     }
+
+    public class CrudController<TDto, TSelectDto, TEntity> : CrudController<TDto, TSelectDto, TEntity, int>
+        where TDto : BaseDto<TDto, TEntity, int>, new()
+        where TSelectDto : BaseDto<TSelectDto, TEntity, int>, new()
+        where TEntity : BaseEntity<int>, new()
+    {
+        public CrudController(IRepository<TEntity> repository)
+            : base(repository)
+        {
+        }
+    }
 }

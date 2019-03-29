@@ -11,9 +11,9 @@ using WebFramework.Api;
 
 namespace MyApi.Controllers
 {
-    public class PostsController : CrudController<PostDto, PostDto, Post, Guid>
+    public class CategoriesController: CrudController<CategoryDto, CategoryDto, Category, int>
     {
-        public PostsController(IRepository<Post> repository): base(repository)
+        public CategoriesController(IRepository<Category> repository): base(repository)
         {
 
         }
