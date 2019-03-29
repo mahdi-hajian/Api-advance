@@ -15,13 +15,10 @@ using MyApi.Models;
 using WebFramework.Api;
 using WebFramework.Filter;
 
-namespace MyApi.Controllers
+namespace MyApi.Controllers.v1
 {
-    [ApiController]
-    [ApiResultFilter]
-    [Route("api/[controller]")]
     [Authorize]
-    public class OldPostsController : ControllerBase
+    public class OldPostsController : CustomBaseController
     {
         private readonly IRepository<Post> _repository;
 

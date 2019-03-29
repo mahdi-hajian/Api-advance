@@ -18,12 +18,10 @@ using Services.Models.Identity;
 using WebFramework.Api;
 using WebFramework.Filter;
 
-namespace MyApi.Controllers
+namespace MyApi.Controllers.v1
 {
-    [Route("api/[controller]")]
-    [ApiResultFilter]
-    [ApiController]
-    public class UserController : ControllerBase
+    [Authorize]
+    public class UserController : CustomBaseController
     {
         private readonly IUserRepository userRepository;
         private readonly ILogger<UserController> logger;
@@ -46,6 +44,7 @@ namespace MyApi.Controllers
         }
 
         [HttpGet("[action]")]
+        [AllowAnonymous]
         public async Task<ApiResult<string>> Token(LoginModel model, CancellationToken cancellationToken)
         {
             var user = await _userManager.FindByNameAsync(model.UserName);
@@ -89,6 +88,7 @@ namespace MyApi.Controllers
 
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IdentityResult> Create(UserDto userDto)
         {
             //var user = Mapper.Map<User>(userDto);

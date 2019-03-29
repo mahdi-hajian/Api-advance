@@ -51,6 +51,8 @@ namespace MyApi
 
             services.AddElmah(Configuration, _siteSetting);
 
+            services.AddCustomApiVersioning();
+
             // ترتیب بین این دو مورد پایین مهم است
             services.AddCustomIdentity(_siteSetting.IdentitySettings);
             services.AddJwtAuthentication(_siteSetting.JwtSettings);
@@ -69,7 +71,7 @@ namespace MyApi
 
             app.UseHsts(env);
 
-            app.UseEFSecondLevelCache();
+            app.UseElmah();
 
             app.UseCors("SiteCorsPolicy");
 
@@ -78,8 +80,6 @@ namespace MyApi
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
-
-            app.UseElmah();
 
             app.UseMvc();
         }

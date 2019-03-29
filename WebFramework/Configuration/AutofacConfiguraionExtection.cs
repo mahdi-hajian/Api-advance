@@ -48,7 +48,9 @@ namespace WebFramework.Configuration
                 .AssignableTo<ISingeltonDependency>()
                 .AsImplementedInterfaces()
                 .SingleInstance();
-        }
+            ///////////////////////////////////////////
+            /// property injection
+        } 
 
         // جایگزین کردن سرویس پرووایدر اتوفک بجای سرویس پرووایدر پیشفرض مایکروسافت
         public static IServiceProvider BuilderServiceProvider(this IServiceCollection Service)

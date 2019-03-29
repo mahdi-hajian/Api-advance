@@ -44,7 +44,7 @@ namespace Services.Autorizes
                 // از چه زمانی قابل استفاده است
                 NotBefore = DateTime.Now.AddMinutes(_siteSetting.JwtSettings.NotBeforeMinutes),
                 // تاریخ انقضای توکن
-                Expires = DateTime.Now.AddHours(_siteSetting.JwtSettings.ExpirationMinutes),
+                Expires = DateTime.Now.AddMinutes(_siteSetting.JwtSettings.ExpirationMinutes),
                 // سیگنیچر
                 SigningCredentials = signinCredentials,
                 // رمزنگاری توکن

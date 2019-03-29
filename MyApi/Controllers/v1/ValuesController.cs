@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using Data.Contracts;
 using Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using WebFramework.Api;
 
-namespace MyApi.Controllers
+namespace MyApi.Controllers.v1
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class ValuesController : CustomBaseController
     {
 
         public ValuesController()

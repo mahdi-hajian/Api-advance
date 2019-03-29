@@ -6,9 +6,11 @@ using ElmahCore.Mvc;
 using ElmahCore.Sql;
 using Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,6 +40,7 @@ namespace WebFramework.Configuration
                 options.Path = _siteSetting.ElmahPath;
                 options.ConnectionString = Configuration.GetConnectionString("ElmahError");
             });
+
         }
 
         public static void AddCorsExtention(this IServiceCollection services)
@@ -149,5 +152,31 @@ namespace WebFramework.Configuration
                 };
             });
         }
+        public static void AddCustomApiVersioning(this IServiceCollection services)
+        {
+            services.AddApiVersioning(option =>
+            {
+                //option.AssumeDefaultVersionWhenUnspecified = true;
+                //option.DefaultApiVersion = new ApiVersion(1, 0);
+
+                //option.ApiVersionReader = new QueryStringApiVersionReader("api-version");
+                // api/posts?api-version=1
+
+                //option.ApiVersionReader = new UrlSegmentApiVersionReader();
+                // api/v1/posts
+
+                //option.ApiVersionReader = new HeaderApiVersionReader(new[] { "Api-Version" });
+                // header => Api-Version : 1
+
+                //option.ApiVersionReader = new MediaTypeApiVersionReader();
+                // Header => Aaccept:application/vnd.mediatype.versioning-v2+json
+
+                //option.ApiVersionReader = ApiVersionReader.Combine(new QueryStringApiVersionReader("api-version"), new UrlSegmentApiVersionReader())
+                // combine of [querystring] & [urlsegment]
+
+                option.ReportApiVersions = true;
+            });
+        }
+
     }
 }

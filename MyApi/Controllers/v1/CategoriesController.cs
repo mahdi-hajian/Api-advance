@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyApi.Models;
 using WebFramework.Api;
 
-namespace MyApi.Controllers
+namespace MyApi.Controllers.v1
 {
     public class CategoriesController: CrudController<CategoryDto, CategoryDto, Category, int>
     {
