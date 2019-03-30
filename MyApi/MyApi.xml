@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MyApi</name>
+    </assembly>
+    <members>
+        <member name="M:MyApi.Controllers.v2.UserController.Token(MyApi.Model.TokenRequest,System.Threading.CancellationToken)">
+            <summary>
+            Login
+            </summary>
+            <param name="model"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="P:MyApi.Controllers.v1.AddressDto.Country">
+            <summary>
+            3-letter ISO country code
+            </summary>
+            <example>Iran</example>
+        </member>
+        <member name="P:MyApi.Controllers.v1.AddressDto.City">
+            <summary>
+            Name of city
+            </summary>
+            <example>Seattle</example>
+        </member>
+        <member name="M:MyApi.Controllers.v1.UserController.Token(MyApi.Model.TokenRequest,System.Threading.CancellationToken)">
+            <summary>
+            Login
+            </summary>
+            <param name="model"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MyApi.Models.CategoryDto">
+            <summary>
+            categoru dto for send and get model
+            </summary>
+        </member>
+        <member name="P:MyApi.Models.CategoryDto.Name">
+            <summary>
+            name
+            </summary>
+        </member>
+        <member name="P:MyApi.Models.CategoryDto.ParentCategoryId">
+            <summary>
+            parent Id
+            </summary>
+        </member>
+        <member name="P:MyApi.Models.CategoryDto.ParentCategoryName">
+            <summary>
+            name of parent
+            </summary>
+        </member>
+        <member name="T:MyApi.Models.PostDto">
+            <summary>
+            post model for get and send post
+            </summary>
+        </member>
+        <member name="P:MyApi.Models.PostDto.Title">
+            <summary>
+            title of post
+            </summary>
+        </member>
+        <member name="P:MyApi.Models.PostDto.Description">
+            <summary>
+            Description
+            </summary>
+        </member>
+        <member name="P:MyApi.Models.PostDto.CategoryId">
+            <summary>
+            id of category
+            </summary>
+        </member>
+        <member name="P:MyApi.Models.PostDto.AuthorId">
+            <summary>
+            id of author
+            </summary>
+        </member>
+        <member name="P:MyApi.Models.PostDto.CategoryName">
+            <summary>
+            category name
+            </summary>
+        </member>
+        <member name="P:MyApi.Models.PostDto.AuthorFullName">
+            <summary>
+            author name
+            </summary>
+        </member>
+        <member name="P:MyApi.Models.PostDto.FullTitle">
+            <summary>
+            title + category name
+            </summary>
+        </member>
+        <member name="M:MyApi.Models.PostDto.CustomMappings(AutoMapper.IMappingExpression{Entities.Post,MyApi.Models.PostDto})">
+            <summary>
+            set custom property full title
+            </summary>
+            <param name="mappingExpression"></param>
+        </member>
+        <member name="T:MyApi.Models.UserDto">
+            <summary>
+            model dto for user
+            </summary>
+        </member>
+        <member name="P:MyApi.Models.UserDto.UserName">
+            <summary>
+            userName
+            </summary>
+        </member>
+        <member name="P:MyApi.Models.UserDto.Password">
+            <summary>
+            password
+            </summary>
+        </member>
+        <member name="P:MyApi.Models.UserDto.FullName">
+            <summary>
+            firstName + LastName
+            </summary>
+        </member>
+        <member name="P:MyApi.Models.UserDto.Email">
+            <summary>
+            email address
+            </summary>
+        </member>
+        <member name="P:MyApi.Models.UserDto.Age">
+            <summary>
+            age
+            </summary>
+        </member>
+        <member name="P:MyApi.Models.UserDto.Gender">
+            <summary>
+            gender
+            </summary>
+        </member>
+        <member name="M:MyApi.Models.UserDto.Validate(System.ComponentModel.DataAnnotations.ValidationContext)">
+            <summary>
+            costom validation for get userDto model
+            </summary>
+            <param name="validationContext"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

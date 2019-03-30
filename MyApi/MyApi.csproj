@@ -1,8 +1,31 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>E:\MyProject\MyApi\MyApi\MyApi.xml</DocumentationFile>
+    <OutputPath>bin/Debug/</OutputPath>
+    <NoWarn>1701;1702;CS1591;</NoWarn>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\v1\**" />
+    <Content Remove="Controllers\v1\**" />
+    <EmbeddedResource Remove="Controllers\v1\**" />
+    <None Remove="Controllers\v1\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Controllers\v1\CategoriesController.cs" />
+    <Compile Include="Controllers\v1\OldPostsController.cs" />
+    <Compile Include="Controllers\v1\PostsController.cs" />
+    <Compile Include="Controllers\v1\TestController.cs" />
+    <Compile Include="Controllers\v1\UserController.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\" />
@@ -11,10 +34,26 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\WebFramework\WebFramework.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="nlog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="web.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="MyApi.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
