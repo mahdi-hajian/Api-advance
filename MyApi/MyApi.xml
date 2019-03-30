@@ -4,9 +4,29 @@
         <name>MyApi</name>
     </assembly>
     <members>
+        <member name="M:MyApi.Controllers.v2.UserController.Token(MyApi.Model.TokenRequest,System.Threading.CancellationToken)">
+            <summary>
+            Login
+            </summary>
+            <param name="model"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="P:MyApi.Controllers.v1.AddressDto.Country">
+            <summary>
+            3-letter ISO country code
+            </summary>
+            <example>Iran</example>
+        </member>
+        <member name="P:MyApi.Controllers.v1.AddressDto.City">
+            <summary>
+            Name of city
+            </summary>
+            <example>Seattle</example>
+        </member>
         <member name="M:MyApi.Controllers.v1.UserController.Token(MyApi.Model.TokenRequest,System.Threading.CancellationToken)">
             <summary>
-            loging method
+            Login
             </summary>
             <param name="model"></param>
             <param name="cancellationToken"></param>

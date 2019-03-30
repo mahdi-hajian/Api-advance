@@ -22,7 +22,7 @@ namespace WebFramework.Swagger
             Assert.NotNull(services, nameof(services));
 
             //Add services to use Example Filters in swagger
-            //services.AddSwaggerExamples();
+            services.AddSwaggerExamples();
             //Add services and configuration to use swagger
             services.AddSwaggerGen(options => 
             {
@@ -38,15 +38,49 @@ namespace WebFramework.Swagger
                 options.IgnoreObsoleteActions();
                 options.IgnoreObsoleteProperties();
 
-                options.SwaggerDoc("v1", new Info { Version = "v1", Title = "API V1" });
-                options.SwaggerDoc("v2", new Info { Version = "v2", Title = "API V2" });
+                options.SwaggerDoc("v1", new Info
+                {
+                    Version = "v1",
+                    Title = "API V1",
+                    Description = "A simple example ASP.NET Web API framework",
+                    //TermsOfService = "None",
+                    Contact = new Contact
+                    {
+                        Name = "مهدی حاجیان",
+                        Email = "mahdi.haj.1375@gmail.com",
+                        Url = "https://www.tabandesign.it"
+                    },
+                    License = new License
+                    {
+                        Name = "MIT License",
+                        Url = "https://en.wikipedia.org/wiki/MIT_License"
+                    },
+                });
+                options.SwaggerDoc("v2", new Info
+                {
+                    Version = "v1",
+                    Title = "API V2",
+                    Description = "A simple example ASP.NET Web API framework",
+                    //TermsOfService = "None",
+                    Contact = new Contact
+                    {
+                        Name = "مهدی حاجیان",
+                        Email = "mahdi.haj.1375@gmail.com",
+                        Url = "https://www.tabandesign.it"
+                    },
+                    License = new License
+                    {
+                        Name = "MIT License",
+                        Url = "https://en.wikipedia.org/wiki/MIT_License"
+                    }
+                });
 
                 #region Filters
                 ////Enable to use [SwaggerRequestExample] & [SwaggerResponseExample]
-                //options.ExampleFilters();
+                options.ExampleFilters();
 
                 ////Adds an Upload button to endpoints which have [AddSwaggerFileUploadButton]
-                //options.OperationFilter<AddFileParamTypesOperationFilter>();
+                options.OperationFilter<AddFileParamTypesOperationFilter>();
 
                 ////Set summary of action if not already set
                 options.OperationFilter<ApplySummariesOperationFilter>();
@@ -119,21 +153,21 @@ namespace WebFramework.Swagger
                 //// Display
                 //options.DefaultModelExpandDepth(2);
                 //options.DefaultModelRendering(ModelRendering.Model);
-                //options.DefaultModelsExpandDepth(-1);
+                options.DefaultModelsExpandDepth(-1);
                 //options.DisplayOperationId();
                 //options.DisplayRequestDuration();
-                //options.DocExpansion(DocExpansion.None);
+                options.DocExpansion(DocExpansion.None);
                 //options.EnableDeepLinking();
                 //options.EnableFilter();
                 //options.MaxDisplayedTags(5);
-                //options.ShowExtensions();
+                options.ShowExtensions();
 
                 //// Network
                 //options.EnableValidator();
                 //options.SupportedSubmitMethods(SubmitMethod.Get);
 
                 //// Other
-                //options.DocumentTitle = "CustomUIConfig";
+                options.DocumentTitle = "CustomUIConfig";
                 //options.InjectStylesheet("/ext/custom-stylesheet.css");
                 //options.InjectJavascript("/ext/custom-javascript.js");
                 //options.RoutePrefix = "api-docs";

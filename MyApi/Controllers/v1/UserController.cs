@@ -7,6 +7,7 @@ using Common;
 using Data.Contracts;
 using Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,8 @@ using Services.Autorizes;
 using Services.Interfaces;
 using Services.Models;
 using Services.Models.Identity;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.Filters;
 using WebFramework.Api;
 using WebFramework.Filter;
 
@@ -54,7 +57,7 @@ namespace MyApi.Controllers.v1
         /// <returns></returns>
         [HttpPost("[action]")]
         [AllowAnonymous]
-        public async Task<ActionResult> Token([FromForm]TokenRequest model, CancellationToken cancellationToken)
+        public virtual async Task<ActionResult> Token([FromForm]TokenRequest model, CancellationToken cancellationToken)
         {
             if (!model.grant_type.Equals("password", StringComparison.OrdinalIgnoreCase))
                 return BadRequest("OAuth flow is not password.");
@@ -73,7 +76,7 @@ namespace MyApi.Controllers.v1
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<List<User>>> Get()
+        public virtual async Task<ActionResult<List<User>>> Get()
         {
             var users = await userRepository.TableNoTracking.ToListAsync();
             if (users == null)
@@ -85,7 +88,7 @@ namespace MyApi.Controllers.v1
 
         [HttpGet("{id:int}")]
         [Authorize]
-        public async Task<ApiResult<User>> Get(int id, [FromHeader] string Authorization, CancellationToken cancellationToken)
+        public virtual async Task<ApiResult<User>> Get(int id, [FromHeader] string Authorization, CancellationToken cancellationToken)
         {
             //به این صورت هم میشود دریافت کرد
             var cancellationToken2 = HttpContext.RequestAborted;
@@ -101,7 +104,7 @@ namespace MyApi.Controllers.v1
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IdentityResult> Create(UserDto userDto)
+        public virtual async Task<IdentityResult> Create(UserDto userDto)
         {
             //var user = Mapper.Map<User>(userDto);
             var user = CustomAutoMapper<User>.GetFrom(userDto);
@@ -111,7 +114,7 @@ namespace MyApi.Controllers.v1
         }
 
         [HttpPut]
-        public async Task<ApiResult<User>> Update(int id, User user, CancellationToken cancellationToken)
+        public virtual async Task<ApiResult<User>> Update(int id, User user, CancellationToken cancellationToken)
         {
             var updateUser = await userRepository.GetByIdAsync(cancellationToken, id);
 
@@ -128,7 +131,7 @@ namespace MyApi.Controllers.v1
         }
 
         [HttpDelete]
-        public async Task<ApiResult> Delete(int id, CancellationToken cancellationToken)
+        public virtual async Task<ApiResult> Delete(int id, CancellationToken cancellationToken)
         {
             var user = await userRepository.GetByIdAsync(cancellationToken, id);
             await userRepository.DeleteAsync(user, cancellationToken);

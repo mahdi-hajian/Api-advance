@@ -55,19 +55,19 @@ namespace Data
             #region seed
             modelBuilder.Entity<Role>().HasData(
                 new Role
-                {
-                    Id = 1,
-                    Name = "Leader",
-                    Description = "ادمین اصلی سایت",
-                    NormalizedName = "LEADER"
-                },
-                new Role
-                {
-                    Id = 2,
-                    Name = "Admin",
-                    Description = "جانشین لیدر",
-                    NormalizedName = "ADMIN"
-                }
+                    {
+                        Id = 1,
+                        Name = "Leader",
+                        Description = "ادمین اصلی سایت",
+                        NormalizedName = "LEADER"
+                    },
+                    new Role
+                    {
+                        Id = 2,
+                        Name = "Admin",
+                        Description = "جانشین",
+                        NormalizedName = "ADMIN"
+                    }
                 );
             #endregion
 

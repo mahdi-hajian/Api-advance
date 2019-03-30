@@ -2,9 +2,11 @@
 using Data.Contracts;
 using EFSecondLevelCache.Core;
 using Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +17,8 @@ using WebFramework.Api;
 namespace MyApi.Controllers.v2
 {
 
-    [ApiVersion(version:"2")]
-    public class PostsController: v1.PostsController
+    [ApiVersion(version: "2")]
+    public class PostsController : v1.PostsController
     {
         private readonly IRepository<Post> _repository;
 
@@ -41,7 +43,7 @@ namespace MyApi.Controllers.v2
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<PostDto>>> Get_v2(CancellationToken cancellationToken)
+        public async Task<ActionResult<List<PostDto>>> GetOverride(CancellationToken cancellationToken)
         {
             var list = await _repository.TableNoTracking.ProjectTo<PostDto>()
                 .Cacheable().ToListAsync(cancellationToken);

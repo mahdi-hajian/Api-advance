@@ -23,6 +23,7 @@
     <Compile Include="Controllers\v1\CategoriesController.cs" />
     <Compile Include="Controllers\v1\OldPostsController.cs" />
     <Compile Include="Controllers\v1\PostsController.cs" />
+    <Compile Include="Controllers\v1\TestController.cs" />
     <Compile Include="Controllers\v1\UserController.cs" />
   </ItemGroup>
 

@@ -21,6 +21,10 @@ namespace WebFramework.Swagger
             var singularizeName = pluralizer.Singularize(controllerActionDescriptor.ControllerName);
             var pluralizeName = pluralizer.Pluralize(singularizeName);
 
+            string Part2Name = "";
+            if (controllerActionDescriptor.ActionName.Split('_').Length == 2)
+                Part2Name = controllerActionDescriptor.ActionName.Split('_')[1];
+
             var parameterCount = operation.Parameters.Where(p => p.Name != "version" && p.Name != "api-version").Count();
 
             if (IsGetAllAction())
@@ -28,7 +32,7 @@ namespace WebFramework.Swagger
                 if (!operation.Summary.HasValue())
                     operation.Summary = $"Returns all {pluralizeName}";
             }
-            else if (IsActionName("Post", "Create"))
+            else if (IsActionName("Post", "Create", "Add", "Set"))
             {
                 if (!operation.Summary.HasValue())
                     operation.Summary = $"Creates a {singularizeName}";
@@ -64,16 +68,25 @@ namespace WebFramework.Swagger
                     operation.Parameters[0].Description = $"A unique id for the {singularizeName}";
             }
 
+            else if (IsActionNamePart2("Post", "Create", "Add", "Set"))
+            {
+                if (!operation.Summary.HasValue())
+                    operation.Summary = $"Set a {Part2Name} for {singularizeName}";
+
+                if (!operation.Parameters[0].Description.HasValue())
+                    operation.Parameters[0].Description = $"A {singularizeName} representation";
+            }
+
             #region Local Functions
             bool IsGetAllAction()
             {
                 foreach (var name in new[] { "Get", "Read", "Select" })
                 {
-                    if ((actionName.Equals(name, StringComparison.OrdinalIgnoreCase) && parameterCount == 0) ||
-                        actionName.Equals($"{name}All", StringComparison.OrdinalIgnoreCase) ||
-                        actionName.Equals($"{name}{pluralizeName}", StringComparison.OrdinalIgnoreCase) ||
-                        actionName.Equals($"{name}All{singularizeName}", StringComparison.OrdinalIgnoreCase) ||
-                        actionName.Equals($"{name}All{pluralizeName}", StringComparison.OrdinalIgnoreCase))
+                    if ((actionName.Split("Override")[0].Equals(name, StringComparison.OrdinalIgnoreCase) && parameterCount == 0) ||
+                        actionName.Split("Override")[0].Equals($"{name}All", StringComparison.OrdinalIgnoreCase) ||
+                        actionName.Split("Override")[0].Equals($"{name}{pluralizeName}", StringComparison.OrdinalIgnoreCase) ||
+                        actionName.Split("Override")[0].Equals($"{name}All{singularizeName}", StringComparison.OrdinalIgnoreCase) ||
+                        actionName.Split("Override")[0].Equals($"{name}All{pluralizeName}", StringComparison.OrdinalIgnoreCase))
                     {
                         return true;
                     }
@@ -82,6 +95,21 @@ namespace WebFramework.Swagger
             }
 
             bool IsActionName(params string[] names)
+            {
+                foreach (var name in names)
+                {
+                    if (actionName.Split("Override")[0].Equals(name, StringComparison.OrdinalIgnoreCase) ||
+                        actionName.Split("Override")[0].Equals($"{name}ById", StringComparison.OrdinalIgnoreCase) ||
+                        actionName.Split("Override")[0].Equals($"{name}{singularizeName}", StringComparison.OrdinalIgnoreCase) ||
+                        actionName.Split("Override")[0].Equals($"{name}{singularizeName}ById", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            bool IsActionNamePart2(params string[] names)
             {
                 foreach (var name in names)
                 {

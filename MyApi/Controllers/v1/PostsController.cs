@@ -24,6 +24,12 @@ namespace MyApi.Controllers.v1
             _repository = repository;
         }
 
+        /// <summary>
+        /// mahdi hajain
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public override Task<ApiResult<PostDto>> Create(PostDto dto, CancellationToken cancellationToken)
         {
             return base.Create(dto, cancellationToken);
