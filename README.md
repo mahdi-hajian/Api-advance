@@ -1,7 +1,8 @@
 # Api-advance
 <div dir="rtl">
   
- **ای پی ای نویسی اصولی در dotnet core**
+## ای پی ای نویسی اصولی در .net Core
+
 
   - **لایه بندی اصولی پروژه (Project Layering and Architecture)** : در این دوره لایه بندی اصولی یک پروژه را از ابتدا شروع و هر بخش را بررسی می کنیم. همچنین مباحث Repository و UOW رو هم بررسی می کنیم.
   - **احراز هویت (Authentication)**
