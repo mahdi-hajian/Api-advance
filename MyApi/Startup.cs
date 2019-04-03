@@ -14,7 +14,7 @@ using WebFramework.Middleware;
 using WebFramework.Swagger;
 
 namespace MyApi
-{
+{ 
     public class Startup
     {
         private readonly SiteSettings _siteSetting;
