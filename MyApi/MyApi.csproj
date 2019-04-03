@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>E:\MyProject\MyApi\MyApi\MyApi.xml</DocumentationFile>
+    <DocumentationFile>bin/Debug/MyApi.xml</DocumentationFile>
     <OutputPath>bin/Debug/</OutputPath>
     <NoWarn>1701;1702;CS1591;</NoWarn>
     <WarningLevel>4</WarningLevel>
