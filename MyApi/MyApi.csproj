@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>E:\MyProject\MyApi\MyApi\MyApi.xml</DocumentationFile>
     <OutputPath>bin/Debug/</OutputPath>
     <NoWarn>1701;1702;CS1591;</NoWarn>
     <WarningLevel>4</WarningLevel>
@@ -49,11 +48,4 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
-  <ItemGroup>
-    <None Update="MyApi.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>
